@@ -1,4 +1,2 @@
-softuni-symfony-project
-=======================
-
-A Symfony project created on December 23, 2018, 9:47 am.
+# softuni-symfony-project
+Final project for Softuni php symfony course
