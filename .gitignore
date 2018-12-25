@@ -49,3 +49,6 @@
 
 # IDEs and editors
 /.idea
+
+# Node
+/node_modules
