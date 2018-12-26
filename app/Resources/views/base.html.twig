@@ -8,11 +8,19 @@
         {% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
-    <body>
+    <body id="{% block body_id %}{% endblock %}">
     <div id="navbar">
         {% include 'common/navbar.html.twig' %}
     </div>
-        {% block body %}{% endblock %}
+        {% block body %}
+            <div class="container body-container" id="main">
+                <div class="row">
+                    <div id="content" class="col-sm-9">
+                        {% block main %}{% endblock %}
+                    </div>
+                </div>
+            </div>
+        {% endblock %}
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
         {% endblock %}

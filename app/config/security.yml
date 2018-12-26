@@ -1,24 +1,30 @@
 # To get started with security, check out the documentation:
 # https://symfony.com/doc/current/security.html
 security:
+    encoders:
+        SchoolDiaryBundle\Entity\User: bcrypt
 
     # https://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
     providers:
-        in_memory:
-            memory: ~
+        database_users:
+            entity: { class: SchoolDiaryBundle:User, property: email }
 
     firewalls:
-        # disables authentication for assets and the profiler, adapt it according to your needs
-        dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
+        secured_area:
+            # this firewall applies to all URLs
+            pattern: ^/
 
-        main:
-            anonymous: ~
-            # activate different ways to authenticate
+            anonymous: true
 
-            # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
-            #http_basic: ~
+            form_login:
+                check_path: security_login
 
-            # https://symfony.com/doc/current/security/form_login_setup.html
-            #form_login: ~
+                login_path: security_login
+
+                csrf_token_generator: security.csrf.token_manager
+
+            logout:
+                path: security_logout
+
+                target: home
+    access_control:
