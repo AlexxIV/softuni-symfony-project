@@ -1,5 +1,10 @@
 {% extends 'base.html.twig' %}
 
 {% block main %}
-    <h2>Hi</h2>
+    {% if app.user %}
+        {{ dump(app.user) }}
+        {{ dump(is_granted('ROLE_ADMIN')) }}
+        {{ dump(is_granted('ROLE_TEACHER')) }}
+        {{ dump(is_granted('ROLE_USER')) }}
+    {% endif %}
 {% endblock %}

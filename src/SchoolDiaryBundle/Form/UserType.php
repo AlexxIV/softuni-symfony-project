@@ -4,6 +4,7 @@ namespace SchoolDiaryBundle\Form;
 
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -30,6 +31,10 @@ class UserType extends AbstractType
             ->add('firstName', TextType::class)
             ->add('lastName', TextType::class)
             ->add('personalID', TextType::class, array('label' => 'Personal ID'))
+            ->add('isTeacher', CheckboxType::class, array(
+                'label' => 'Register as teacher',
+                'required' => false,
+            ))
             ->add('submit', SubmitType::class, array(
                 'label' => 'Register'
             ));

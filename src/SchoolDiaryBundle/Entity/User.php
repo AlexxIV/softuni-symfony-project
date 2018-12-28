@@ -86,6 +86,16 @@ class User implements UserInterface
      */
     private $roles;
 
+    /**
+     * @var bool
+     */
+    private $isTeacher;
+
+    /**
+     * @var string
+     */
+    private $oldPassword;
+
     public function __construct()
     {
         $this->roles = new ArrayCollection();
@@ -217,6 +227,34 @@ class User implements UserInterface
         }
 
         return $stringRoles;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOldPassword()
+    {
+        return $this->oldPassword;
+    }
+
+    /**
+     * @param string $oldPassword
+     */
+    public function setOldPassword(string $oldPassword): void
+    {
+        $this->oldPassword = $oldPassword;
+    }
+
+
+
+    public function getIsTeacher()
+    {
+        return $this->isTeacher;
+    }
+
+    public function setIsTeacher(bool $isTeacher): void
+    {
+        $this->isTeacher = $isTeacher;
     }
 
     public function addRole(Role $role)

@@ -21,10 +21,22 @@ security:
 
                 login_path: security_login
 
+                always_use_default_target_path: true
+
                 csrf_token_generator: security.csrf.token_manager
 
             logout:
+                target: homepage
                 path: security_logout
 
-                target: home
+
+
     access_control:
+        - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/register$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/, role: ROLE_USER }
+
+
+    role_hierarchy:
+        ROLE_TEACHER: ROLE_USER
+        ROLE_ADMIN: ROLE_TEACHER

@@ -2,30 +2,50 @@
 
 namespace SchoolDiaryBundle\Controller;
 
-
-use SchoolDiaryBundle\Entity\User;
-use SchoolDiaryBundle\Form\SignInFormFactory;
-use SchoolDiaryBundle\Form\UserLogin;
-use SchoolDiaryBundle\Form\UserType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends Controller
 {
     /**
-     * @Route("/login", name="security_login")
+     * @var AuthorizationCheckerInterface
      */
-    public function loginAction(SignInFormFactory $formFactory)
+    private $auth_checker;
+
+    public function __construct(
+        AuthorizationCheckerInterface $authChecker
+    )
     {
-        $form = $formFactory->createForm();
+        $this->auth_checker = $authChecker;
+    }
+
+    /**
+     * @Route("/login", name="security_login")
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function loginAction(AuthenticationUtils $authenticationUtils)
+    {
+        if ($this->auth_checker->isGranted('IS_AUTHENTICATED_FULLY')) {
+            $this->addFlash('info', 'You are already logged in!');
+            return $this->redirectToRoute('homepage');
+        }
+
+        $error = $authenticationUtils->getLastAuthenticationError();
+
+        $lastUsername = $authenticationUtils->getLastUsername();
 
         return $this->render('security/login.html.twig', array(
-            'form' => $form->createView(),
+            'last_username' => $lastUsername,
+            'error' => $error,
         ));
     }
 
+    /**
+     * @Route("/logout", name="security_logout")
+     * @throws \Exception
+     */
     public function logout() {
         throw new \Exception('Logout failed!');
     }
