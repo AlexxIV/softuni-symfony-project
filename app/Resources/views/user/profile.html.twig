@@ -15,7 +15,7 @@
                 </div>
                 <div class="form-group">
                     <label for="user_lastName">First name</label>
-                    <input type="text" id="user_firstName" class="form-control" value="{{ user.lastName }}" disabled="disabled">
+                    <input type="text" id="user_lastName" class="form-control" value="{{ user.lastName }}" disabled="disabled">
                 </div>
                 <div class="form-group">
                     <label for="user_personalID">Personal ID</label>
@@ -35,11 +35,13 @@
                 </div>
             </div>
             <div class="password-change p-3">
-                {{ form_start(form, {'method': 'POST', 'action': path('user_profile'), 'attr' : { 'class': 'd-none', 'id': 'change_password_form' } }) }}
+                {{ form_start(form, {'method': 'POST', 'action': path('user_profile'), 'attr' : { 'class': form.vars.valid ? 'd-none' : 'd-block', 'id': 'change_password_form' } }) }}
                 {{ form_end(form) }}
-                <button class="btn-link btn float-right" id="change_password_button">Change Password</button>
-                <button class="btn-light btn d-none " id="cancel_change_password_button">Cancel</button>
+                <button class="btn-{{ form.vars.valid ? 'link' : 'primary' }} btn float-right" id="{{ form.vars.valid ? 'change_password_button' : 'change_password_submit' }}">Change Password</button>
+                <button class="btn-light btn {{ form.vars.valid ? 'd-none' : 'd-inline'}}" id="cancel_change_password_button">Cancel</button>
             </div>
         </div>
     </div>
+    {{ dump(form.vars.valid) }}
+    {{ dump(form) }}
 {% endblock %}

@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class UserController extends Controller
 {
@@ -160,17 +161,22 @@ class UserController extends Controller
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function profile(Request $request){
-        $userId = $this->getUser()->getId();
+//        $userId = $this->getUser()->getId();
+//
+//        $user = $this
+//            ->getDoctrine()
+//            ->getRepository(User::class)
+//            ->find($userId);
 
-        $user = $this
-            ->getDoctrine()
-            ->getRepository(User::class)
-            ->find($userId);
+        $user = $this->getUser();
 
         $form = $this->createFormBuilder()
-            ->add('oldPassword', PasswordType::class)
+            ->add('oldPassword', PasswordType::class, array(
+                'constraints' => new NotBlank(),
+            ))
             ->add('password', RepeatedType::class,
                 array(
+                    'constraints' => new NotBlank(),
                     'type' => PasswordType::class,
                     'first_options' => array('label' => 'New Password'),
                     'second_options' => array('label' => 'Repeat New Password'),
@@ -199,12 +205,13 @@ class UserController extends Controller
 
         if ($request->isMethod('POST')) {
             $form->submit($request->request->get($form->getName()));
-                var_dump($form);
-//            if ($form->isSubmitted() && $form->isValid()) {
-//                // perform some action...
-//
-//                return $this->redirectToRoute('task_success');
-//            }
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                var_dump($form->getData());
+                $oldPassword = $form->getData()->getOldPassword();
+
+
+            }
         }
 
         return $this->render('user/profile.html.twig', array(
