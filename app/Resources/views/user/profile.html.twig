@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-sm-6 offset-sm-3">
+            <h2 class="p-3">My profile: </h2>
+            <div class="user-profile p-3">
+                <div class="form-group">
+                    <label for="user_email">Email</label>
+                    <input type="text" id="user_email" class="form-control" value="{{ user.email }}" disabled="disabled">
+                </div>
+                <div class="form-group">
+                    <label for="user_firstName">First name</label>
+                    <input type="text" id="user_firstName" class="form-control" value="{{ user.firstName }}" disabled="disabled">
+                </div>
+                <div class="form-group">
+                    <label for="user_lastName">First name</label>
+                    <input type="text" id="user_lastName" class="form-control" value="{{ user.lastName }}" disabled="disabled">
+                </div>
+                <div class="form-group">
+                    <label for="user_personalID">Personal ID</label>
+                    <input type="text" id="user_personalID" class="form-control" value="{{ user.personalID }}" disabled="disabled">
+                </div>
+                <div class="form-group">
+                    <div class="form-check form-check-inline">
+                        <input type="checkbox" id="user_isTeacher" class="form-check-input" {{ user.teacher ? 'checked' : ''}} disabled="disabled">
+                        <label class="form-check-label" for="user_isTeacher">Teacher</label>
+                    </div>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <div class="form-check form-check-inline">
+                            <input type="checkbox" id="user_isAdmin" class="form-check-input" {{ user.admin ? 'checked' : ''}} disabled="disabled">
+                            <label class="form-check-label" for="user_isTeacher">Admin</label>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="password-change p-3">
+                {{ form_start(form, {'method': 'POST', 'action': path('user_profile'), 'attr' : { 'class': form.vars.valid ? 'd-none' : 'd-block', 'id': 'change_password_form' } }) }}
+                {{ form_end(form) }}
+                <button class="btn-{{ form.vars.valid ? 'link' : 'primary' }} btn float-right" id="{{ form.vars.valid ? 'change_password_button' : 'change_password_submit' }}">Change Password</button>
+                <button class="btn-light btn {{ form.vars.valid ? 'd-none' : 'd-inline'}}" id="cancel_change_password_button">Cancel</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}

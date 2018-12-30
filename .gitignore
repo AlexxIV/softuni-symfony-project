@@ -52,3 +52,10 @@
 
 # Node
 /node_modules
+
+# Frontend
+/web/build/
+
+# Lockfiles
+composer.lock
+yarn.lock

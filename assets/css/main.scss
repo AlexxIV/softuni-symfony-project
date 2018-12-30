@@ -1,1 +1,19 @@
 @import "~bootstrap/scss/bootstrap";
+@import "footer";
+@import "navbar";
+@import "tables";
+
+@import "_helpers/helpers";
+
+
+html,
+body {
+  margin:0;
+  padding:0;
+  height:100%;
+}
+
+#main-wrapper {
+  min-height: 100%;
+  position: relative;
+}

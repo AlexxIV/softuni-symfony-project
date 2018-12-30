@@ -1,24 +1,43 @@
 # To get started with security, check out the documentation:
 # https://symfony.com/doc/current/security.html
 security:
+    encoders:
+        SchoolDiaryBundle\Entity\User: bcrypt
 
     # https://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
     providers:
-        in_memory:
-            memory: ~
+        database_users:
+            entity: { class: SchoolDiaryBundle:User, property: email }
 
     firewalls:
-        # disables authentication for assets and the profiler, adapt it according to your needs
-        dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
+        secured_area:
+            # this firewall applies to all URLs
+            pattern: ^/
 
-        main:
-            anonymous: ~
-            # activate different ways to authenticate
+            anonymous: true
 
-            # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
-            #http_basic: ~
+            form_login:
+                check_path: security_login
 
-            # https://symfony.com/doc/current/security/form_login_setup.html
-            #form_login: ~
+                login_path: security_login
+
+                always_use_default_target_path: true
+
+                csrf_token_generator: security.csrf.token_manager
+
+            logout:
+                target: homepage
+                path: security_logout
+
+
+
+    access_control:
+        - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/register$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin/create$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/, role: ROLE_USER }
+
+
+    role_hierarchy:
+        ROLE_TEACHER: ROLE_USER
+        ROLE_ADMIN: ROLE_TEACHER

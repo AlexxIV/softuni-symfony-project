@@ -2,23 +2,37 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>{% block title %}SchoolBook!{% endblock %}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{% block title %}SchoolBook{% endblock %}</title>
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
-    <body>
-    <div id="navbar">
-        {% include 'common/navbar.html.twig' %}
-    </div>
-        {% block body %}{% endblock %}
-        {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
-        {% endblock %}
-    <div id="footer">
-        {% include 'common/footer.html.twig' %}
-    </div>
+    <body id="{% block body_id %}{% endblock %}">
+        <div id="main-wrapper">
+            {% include 'common/navbar.html.twig' %}
+            {% for label, flashes in app.session.flashbag.all %}
+                {% for flash in flashes %}
+                    <div class="text-center alert alert-{{ label }}">
+                        {{ flash }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+            {% block body %}
+                <div class="container body-container" id="main">
+                    <div class="row">
+                        <div id="content" class="col-12">
+                            {% block main %}{% endblock %}
+                        </div>
+                    </div>
+                </div>
+            {% endblock %}
+            {% block javascripts %}
+                {{ encore_entry_script_tags('app') }}
+            {% endblock %}
+            {% include 'common/footer.html.twig' %}
+        </div>
     </body>
 </html>
 

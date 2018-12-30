@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block body_id 'register' %}
+{% block main %}
+    <div class="row">
+        <div class="col-sm-6 offset-sm-3">
+            {{ form(form, {'method': 'POST', 'action': path('user_register'), 'attr' : { 'class': 'p-3' } }) }}
+        </div>
+    </div>
+{% endblock %}
+{#<form action="" method="post">
+    <div class="form-group">
+        <label for="email" class="form-control-label">Email address</label>
+        <input type="email"
+               class="form-control  {{ form.email.vars.errors|length ? 'is-invalid' : '' }}"
+               id="email"
+               placeholder="Email"
+               name="user[email]"
+
+
+        >
+    </div>
+    <div class="form-group">
+        <label for="firstName" class="form-control-label">First Name</label>
+        <input type="text"
+               class="form-control"
+               id="firstName"
+               placeholder="Full Name"
+               name="user[firstName]"
+        >
+    </div>
+    <div class="form-group">
+        <label for="lastName" class="form-control-label">Last Name</label>
+        <input type="text"
+               class="form-control"
+               id="lastName"
+               placeholder="Last Name"
+               name="user[lastName]"
+        >
+    </div>
+    <div class="form-group">
+        <label for="personalID" class="form-control-label">Personal ID</label>
+        <input type="text"
+               class="form-control"
+               id="personalID"
+               placeholder="Personal ID"
+               name="user[personalID]"
+        >
+    </div>
+    <div class="form-group">
+        <label for="password" class="form-control-label">Password</label>
+        <input type="password"
+               class="form-control"
+               id="password"
+               placeholder="Password"
+               name="user[password][first]"
+        >
+    </div>
+    <div class="form-group">
+        <label for="confirm_password" class="form-control-label">Confirm Password</label>
+        <input type="password"
+               class="form-control"
+               id="confirm_password"
+               placeholder="Confirm Password"
+               name="user[password][second]"
+        >
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+    {{  form_row(form._token) }}
+</form>#}
