@@ -12,10 +12,10 @@
     <body id="{% block body_id %}{% endblock %}">
         <div id="main-wrapper">
             {% include 'common/navbar.html.twig' %}
-            {% for label, messages in app.flashes %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ label }}">
-                        {{ message }}
+            {% for label, flashes in app.session.flashbag.all %}
+                {% for flash in flashes %}
+                    <div class="text-center alert alert-{{ label }}">
+                        {{ flash }}
                     </div>
                 {% endfor %}
             {% endfor %}

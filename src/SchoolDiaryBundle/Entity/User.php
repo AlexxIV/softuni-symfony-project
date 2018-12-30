@@ -92,9 +92,34 @@ class User implements UserInterface
     private $isTeacher;
 
     /**
-     * @var string
+     * @var SchoolClass
+     *
+     * @ORM\OneToOne(targetEntity="SchoolClass", mappedBy="teacher")
      */
-    private $oldPassword;
+    private $teacherClass;
+
+    /**
+     * @var SchoolClass
+     *
+     * @ORM\ManyToOne(targetEntity="SchoolClass", inversedBy="students")
+     * @ORM\JoinColumn(name="school_class_id", referencedColumnName="id", nullable=true)
+     */
+    private $studentClass;
+
+    /**
+     * @var string;
+     *
+     * @ORM\Column(name="grade", type="string", nullable=true)
+     *
+     * * @Assert\Range(
+     *      min = 1,
+     *      max = 12,
+     *      minMessage = "Please select graden in range [1-12]",
+     *      maxMessage = "Please select graden in range [1-12]"
+     * )
+     */
+
+    private $grade;
 
     public function __construct()
     {
@@ -229,24 +254,6 @@ class User implements UserInterface
         return $stringRoles;
     }
 
-    /**
-     * @return string
-     */
-    public function getOldPassword()
-    {
-        return $this->oldPassword;
-    }
-
-    /**
-     * @param string $oldPassword
-     */
-    public function setOldPassword(string $oldPassword): void
-    {
-        $this->oldPassword = $oldPassword;
-    }
-
-
-
     public function getIsTeacher()
     {
         return $this->isTeacher;
@@ -294,6 +301,54 @@ class User implements UserInterface
     public function eraseCredentials()
     {
         // TODO: Implement eraseCredentials() method.
+    }
+
+    /**
+     * @return SchoolClass
+     */
+    public function getTeacherClass()
+    {
+        return $this->teacherClass;
+    }
+
+    /**
+     * @param SchoolClass $teacherClass
+     */
+    public function setTeacherClass(SchoolClass $teacherClass): void
+    {
+        $this->teacherClass = $teacherClass;
+    }
+
+    /**
+     * @return SchoolClass
+     */
+    public function getStudentClass()
+    {
+        return $this->studentClass;
+    }
+
+    /**
+     * @param SchoolClass $studentClass
+     */
+    public function setStudentClass(SchoolClass $studentClass): void
+    {
+        $this->studentClass = $studentClass;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGrade()
+    {
+        return $this->grade;
+    }
+
+    /**
+     * @param string $grade
+     */
+    public function setGrade(string $grade): void
+    {
+        $this->grade = $grade;
     }
 }
 

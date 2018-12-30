@@ -8,7 +8,7 @@ import './forms';
 
 $("document").ready(function(){
     setTimeout(function(){
-        $("div.alert").fadeOut();
+        $("div.alert").fadeOut().remove();
     }, 5000 ); // 5 secs
 });
 

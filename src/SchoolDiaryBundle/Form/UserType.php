@@ -31,6 +31,10 @@ class UserType extends AbstractType
             ->add('firstName', TextType::class)
             ->add('lastName', TextType::class)
             ->add('personalID', TextType::class, array('label' => 'Personal ID'))
+            ->add('grade', TextType::class, array(
+                'label' => 'Grade',
+                'required' => false,
+            ))
             ->add('isTeacher', CheckboxType::class, array(
                 'label' => 'Register as teacher',
                 'required' => false,

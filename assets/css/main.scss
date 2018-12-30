@@ -1,6 +1,7 @@
 @import "~bootstrap/scss/bootstrap";
 @import "footer";
 @import "navbar";
+@import "tables";
 
 @import "_helpers/helpers";
 
@@ -15,10 +16,4 @@ body {
 #main-wrapper {
   min-height: 100%;
   position: relative;
-}
-#footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  background: #d3d3d3;
 }

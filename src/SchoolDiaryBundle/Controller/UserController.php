@@ -3,7 +3,10 @@
 namespace SchoolDiaryBundle\Controller;
 
 use http\Env\Response;
+use SchoolDiaryBundle\Entity\Days;
 use SchoolDiaryBundle\Entity\Role;
+use SchoolDiaryBundle\Entity\Schedule;
+use SchoolDiaryBundle\Entity\SchoolClass;
 use SchoolDiaryBundle\Entity\User;
 use SchoolDiaryBundle\Form\UserType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -12,6 +15,8 @@ use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class UserController extends Controller
@@ -80,6 +85,28 @@ class UserController extends Controller
                     ->findOneBy(['name' => 'ROLE_USER']);
 
                 $user->addRole($role);
+
+                $studentClass = $this->getDoctrine()
+                                    ->getRepository(SchoolClass::class)
+                                    ->findOneBy(['name' => $user->getGrade()]);
+
+                if (null !== $studentClass) {
+                    $user->setStudentClass($studentClass);
+                } else {
+                    $em = $this->getDoctrine()->getManager();
+
+
+                    $studentClass = new SchoolClass();
+                    $schedule = new Schedule();
+
+                    $em->persist($schedule);
+
+                    $studentClass->setSchedule($schedule);
+                    $studentClass->setName($user->getGrade());
+                    $em->persist($studentClass);
+
+                    $user->setStudentClass($studentClass);
+                }
             }
 
 
@@ -105,6 +132,7 @@ class UserController extends Controller
 //                $errors[$fieldName] = $fieldError->getMessage();
 //            }
 //        }
+
 
         return $this->render('user/register.html.twig', array(
             'form' => $form->createView(),
@@ -172,7 +200,13 @@ class UserController extends Controller
 
         $form = $this->createFormBuilder()
             ->add('oldPassword', PasswordType::class, array(
-                'constraints' => new NotBlank(),
+                'constraints' => array(
+                    new UserPassword(),
+                    new NotBlank(),
+                ),
+                'mapped' => false,
+                'required' => true,
+                'label' => 'Old Password'
             ))
             ->add('password', RepeatedType::class,
                 array(
@@ -207,10 +241,22 @@ class UserController extends Controller
             $form->submit($request->request->get($form->getName()));
 
             if ($form->isSubmitted() && $form->isValid()) {
-                var_dump($form->getData());
-                $oldPassword = $form->getData()->getOldPassword();
 
+                $em = $this->getDoctrine()->getManager();
+                $user = $em->getRepository(User::class)->findOneBy(['email' => $this->getUser()->getEmail()]);
 
+                $plainNewPassword = $form->getData(){'password'};
+
+                $newPassword = $this->get('security.password_encoder')
+                    ->encodePassword($user, $plainNewPassword);
+
+                $user->setPassword($newPassword);
+
+                $em->flush();
+
+                $this->addFlash('success', 'Password changed successfully!');
+
+                return $this->redirectToRoute('user_profile');
             }
         }
 
