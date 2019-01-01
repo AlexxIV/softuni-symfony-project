@@ -121,9 +121,21 @@ class User implements UserInterface
 
     private $grade;
 
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\ManyToMany(targetEntity="PersonalGrades")
+     * @ORM\JoinTable(name="students_grades",
+     *     joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="personal_grade_id", referencedColumnName="id", unique=true)})
+     */
+    private $personalGrades;
+
     public function __construct()
     {
         $this->roles = new ArrayCollection();
+
+        $this->personalGrades = new ArrayCollection();
     }
 
     /**

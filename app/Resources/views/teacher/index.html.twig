@@ -6,15 +6,14 @@
             <div class="row">
                 <div class="col-6 offset-3 mt-2 mb-2">
                     <span class="font-weight-bold">Grade:</span> {{ emptyClass.name }}
-                    <a href="/teacher/subscribe/{{ emptyClass.id }}" class="float-right btn-primary btn">Select</a>
+                    <a href="{{ path('teacher_subscribe', {'id': emptyClass.id,}) }}" class="float-right btn-primary btn">Select</a>
                 </div>
             </div>
             {% endfor %}
         {% else %}
             <h2 class="text-center m-5">Welcome!</h2>
-            <h3 class="text-center m-2">Your class is <span>{{ students[0].grade }}</span> grade.</h3>
+            <h3 class="text-center m-2">Your class is <span>{{ teacherClass.name }}</span> grade.</h3>
             <h3 class="text-center m-2">Students: </h3>
-
                 <div class="row">
                     <div class="col-10 offset-1 mt-5 mb-5">
                         <div class="row">
@@ -41,7 +40,7 @@
                                     </h5>
                                 </div>
                                 <div class="col-4 text-center">
-                                    <a href="" class="btn-success btn">Details</a>
+                                    <a href="{{ path('teacher_details', {'id': student.id}) }}" class="btn-success btn">Details</a>
                                     <a href="" class="btn-danger btn">Remove</a>
                                 </div>
                             </div>

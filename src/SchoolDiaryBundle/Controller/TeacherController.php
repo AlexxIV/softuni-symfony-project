@@ -5,6 +5,7 @@ namespace SchoolDiaryBundle\Controller;
 use SchoolDiaryBundle\Entity\SchoolClass;
 use SchoolDiaryBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,13 +50,14 @@ class TeacherController extends Controller
 
         return $this->render('teacher/index.html.twig', array(
             'students' => $students,
+            'teacherClass' => $teacherClass,
         ));
     }
 
     /**
      * @Route("/teacher/subscribe/{id}", name="teacher_subscribe")
      * @param $id
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      */
     public function subscribeAction($id)
     {
@@ -98,5 +100,22 @@ class TeacherController extends Controller
 
         $this->addFlash('danger', 'An error occurred');
         return $this->redirectToRoute('teacher_home');
+    }
+
+    /**
+     * @Route("/teacher/student/details/{id}", name="teacher_details")
+     * @param $id
+     * @return Response
+     */
+
+    public function studentDetailsAction($id) {
+        $student = $this
+                ->getDoctrine()
+                ->getRepository(User::class)
+                ->find($id);
+
+        return $this->render('teacher/details.html.twig', array(
+            'student' => $student,
+        ));
     }
 }
