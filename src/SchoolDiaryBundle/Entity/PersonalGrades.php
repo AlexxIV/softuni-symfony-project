@@ -2,6 +2,7 @@
 
 namespace SchoolDiaryBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -49,6 +50,17 @@ class PersonalGrades
      */
     private $notes;
 
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\ManyToMany(targetEntity="User", mappedBy="personalGrades")
+     */
+    private $students;
+
+    public function __construct()
+    {
+        $this->students = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -59,11 +71,11 @@ class PersonalGrades
     {
         return $this->id;
     }
-    
+
     /**
      * @return string
      */
-    public function getGradeName(): string
+    public function getGradeName()
     {
         return $this->gradeName;
     }
@@ -79,7 +91,7 @@ class PersonalGrades
     /**
      * @return int
      */
-    public function getValue(): int
+    public function getValue()
     {
         return $this->value;
     }
@@ -95,7 +107,7 @@ class PersonalGrades
     /**
      * @return string
      */
-    public function getNotes(): string
+    public function getNotes()
     {
         return $this->notes;
     }

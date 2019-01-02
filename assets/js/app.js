@@ -5,6 +5,7 @@ import '../css/main.scss';
 import 'bootstrap';
 
 import './forms';
+import './ajax-crud';
 
 $("document").ready(function(){
     setTimeout(function(){

@@ -282,6 +282,11 @@ class User implements UserInterface
         return $this;
     }
 
+    public function addGrade(PersonalGrades $grade) {
+        $this->personalGrades[] = $grade;
+        return $this;
+    }
+
     public function isAdmin()
     {
         return in_array("ROLE_ADMIN", $this->getRoles());
@@ -362,5 +367,20 @@ class User implements UserInterface
     {
         $this->grade = $grade;
     }
+
+    public function getPersonalGrades()
+    {
+        return $this->personalGrades;
+    }
+
+    /**
+     * @param ArrayCollection $personalGrades
+     */
+    public function setPersonalGrades(ArrayCollection $personalGrades): void
+    {
+        $this->personalGrades = $personalGrades;
+    }
+
+
 }
 
