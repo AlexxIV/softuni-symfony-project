@@ -1,10 +1,11 @@
 @import "~bootstrap/scss/bootstrap";
+@import "~@fortawesome/fontawesome-free/css/all.css";
 @import "footer";
 @import "navbar";
 @import "tables";
 
 @import "_helpers/helpers";
-
+@import "_helpers/animations";
 
 html,
 body {
