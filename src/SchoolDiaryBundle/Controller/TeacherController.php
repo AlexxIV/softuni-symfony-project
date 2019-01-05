@@ -2,7 +2,9 @@
 
 namespace SchoolDiaryBundle\Controller;
 
+use SchoolDiaryBundle\Entity\Days;
 use SchoolDiaryBundle\Entity\PersonalGrades;
+use SchoolDiaryBundle\Entity\Schedule;
 use SchoolDiaryBundle\Entity\SchoolClass;
 use SchoolDiaryBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -14,6 +16,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class TeacherController extends Controller
 {
+    private const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+
     /**
      * @Route("/teacher", name="teacher_home")
      */
@@ -48,11 +52,17 @@ class TeacherController extends Controller
                 ->getRepository(User::class)
                 ->findBy(['studentClass' => $teacherClass->getId()]);
 
+        $unsubscribedStudents = $this
+                            ->getDoctrine()
+                            ->getRepository(User::class)
+                            ->findBy(['studentClass' => null, 'grade' => $teacherClass->getName()]);
+
 
 
         return $this->render('teacher/index.html.twig', array(
             'students' => $students,
             'teacherClass' => $teacherClass,
+            'unsubscribedStudents' => $unsubscribedStudents
         ));
     }
 
@@ -79,12 +89,26 @@ class TeacherController extends Controller
         if (null !== $schoolClass) {
             if (null === $schoolClass->getTeacher() && null === $user->getTeacherClass()) {
                try {
+                   $em = $this->getDoctrine()->getManager();
+
                    $schoolClass->setTeacher($user);
                    $user->setTeacherClass($schoolClass);
 
-                   $em = $this
-                       ->getDoctrine()
-                       ->getManager();
+                   if (null === $schoolClass->getSchedule()) {
+
+                       $schedule = new Schedule();
+
+                       foreach (self::DAYS as $dayName) {
+                           /** @var Days $day */
+                           $day = new Days();
+                           $day->setDay($dayName);
+                           $em->persist($day);
+                           $schedule->addDay($day);
+                       }
+                       $em->persist($schedule);
+                       $schoolClass->setSchedule($schedule);
+
+                   }
 
                    $em->persist($user);
                    $em->persist($schoolClass);
@@ -105,11 +129,45 @@ class TeacherController extends Controller
     }
 
     /**
+     * @Route("/teacher/student/register/{id}", name="teacher_register_student")
+     * @param $id
+     */
+    public function studentRegisterAction($id)
+    {
+        $student = $this
+                ->getDoctrine()
+                ->getRepository(User::class)
+                ->find($id);
+
+        if (null !== $student->getStudentClass()) {
+            $this->addFlash('warning', 'The students is already registered!');
+            $this->redirectToRoute('teacher_home');
+        }
+
+        $currentClass = $this
+                    ->getDoctrine()
+                    ->getRepository(SchoolClass::class)
+                    ->findOneBy(['teacher' => $this->getUser()->getId()]);
+
+        $em = $this
+                ->getDoctrine()
+                ->getManager();
+
+        $student->setStudentClass($currentClass);
+
+        $em->persist($student);
+        $em->flush();
+
+        $this->addFlash('success', 'Student registered successfully!');
+        return $this->redirectToRoute('teacher_home');
+
+    }
+
+    /**
      * @Route("/teacher/student/details/{id}", name="teacher_details")
      * @param $id
      * @return Response
      */
-
     public function studentDetailsAction($id) {
         $student = $this
                 ->getDoctrine()

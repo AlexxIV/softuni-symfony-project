@@ -34,9 +34,22 @@ class Schedule
     /**
      * @var ArrayCollection
      *
-     * @OneToMany(targetEntity="Days", mappedBy="schedule")
+     * @ORM\ManyToMany(targetEntity="Days", inversedBy="schedule")
+     * @ORM\JoinTable(name="schedule_days",
+     *     joinColumns={@ORM\JoinColumn(name="schedule_id", referencedColumnName="id")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="day_id", referencedColumnName="id", unique=true)})
      */
     private $days;
+
+//    /**
+//     * @var ArrayCollection
+//     *
+//     * @ORM\ManyToMany(targetEntity="PersonalGrades")
+//     * @ORM\JoinTable(name="students_grades",
+//     *     joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
+//     *     inverseJoinColumns={@ORM\JoinColumn(name="personal_grade_id", referencedColumnName="id", unique=true)})
+//     */
+//    private $personalGrades;
 
     public function __construct()
     {
@@ -77,12 +90,10 @@ class Schedule
         return $this->days;
     }
 
-    /**
-     * @param ArrayCollection $days
-     */
-    public function setDays(ArrayCollection $days): void
+    public function addDay(Days $day)
     {
-        $this->days = $days;
+        $this->days[] = $day;
+        return $this;
     }
 
 

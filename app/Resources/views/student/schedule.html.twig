@@ -3,9 +3,10 @@
     <div class="row">
         <div class="col-12 schedule-table mt-5">
             <div class="row">
-                {% for day in test %}
+                {% if days is defined and days|length > 0 %}
+                {% for day in days %}
                     <div class="{{ day.day == 'Monday' ? 'offset-lg-1 ' : '' }}col-8 offset-2 col-lg-2 offset-lg-0 table-cell">
-                        <div class="col-12 text-center table-head font-weight-bolder">{{ day.day }}</div>
+                        <div class="col-12 text-center table-head-day font-weight-bolder">{{ day.day }}</div>
                         <div class="row table-row first-row">
                             <div class="col-2 table-index">1</div>
                             <div class="col-9 table-value">{{ day.first }}</div>
@@ -36,6 +37,11 @@
                         </div>
                     </div>
                 {% endfor %}
+                {% else %}
+                    <div class="col-12 text-center">
+                        <h3 class="text-center">You are not registered yet.</h3>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>

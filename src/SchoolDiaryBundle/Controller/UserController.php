@@ -86,27 +86,27 @@ class UserController extends Controller
 
                 $user->addRole($role);
 
-                $studentClass = $this->getDoctrine()
-                                    ->getRepository(SchoolClass::class)
-                                    ->findOneBy(['name' => $user->getGrade()]);
-
-                if (null !== $studentClass) {
-                    $user->setStudentClass($studentClass);
-                } else {
-                    $em = $this->getDoctrine()->getManager();
-
-
-                    $studentClass = new SchoolClass();
-                    $schedule = new Schedule();
-
-                    $em->persist($schedule);
-
-                    $studentClass->setSchedule($schedule);
-                    $studentClass->setName($user->getGrade());
-                    $em->persist($studentClass);
-
-                    $user->setStudentClass($studentClass);
-                }
+//                $studentClass = $this->getDoctrine()
+//                                    ->getRepository(SchoolClass::class)
+//                                    ->findOneBy(['name' => $user->getGrade()]);
+//
+//                if (null !== $studentClass) {
+//                    $user->setStudentClass($studentClass);
+//                } else {
+//                    $em = $this->getDoctrine()->getManager();
+//
+//
+//                    $studentClass = new SchoolClass();
+//                    $schedule = new Schedule();
+//
+//                    $em->persist($schedule);
+//
+//                    $studentClass->setSchedule($schedule);
+//                    $studentClass->setName($user->getGrade());
+//                    $em->persist($studentClass);
+//
+//                    $user->setStudentClass($studentClass);
+//                }
             }
 
 

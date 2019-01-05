@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+{% block main %}
+    <div class="row grades mt-5">
+        <div class="col-12">
+            {% if grades is defined %}
+            <div class="row mt-2">
+                <div class="col-3 text-center">Course*</div>
+                <div class="col-3 text-center">Grade*</div>
+                <div class="col-3 text-center">Notes</div>
+            </div>
+            {% for grade in grades %}
+                <div class="row m-3">
+                    <div class="col-3 grade-name">
+                        {{ grade.gradename }}
+                    </div>
+                    <div class="col-3 grade-value">
+                        {{ grade.value }}
+                    </div>
+                    <div class="col-3 grade-notes">
+                        {{ grade.notes }}
+                    </div>
+                </div>
+            {% endfor %}
+            {% else %}
+                <div class="col-12 text-center">
+                    <h3 class="text-center">You are not registered yet.</h3>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

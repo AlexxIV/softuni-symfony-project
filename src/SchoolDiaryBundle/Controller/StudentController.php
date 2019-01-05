@@ -3,11 +3,14 @@
 namespace SchoolDiaryBundle\Controller;
 
 
+use Doctrine\Common\Collections\ArrayCollection;
 use SchoolDiaryBundle\Entity\Days;
+use SchoolDiaryBundle\Entity\PersonalGrades;
 use SchoolDiaryBundle\Entity\Schedule;
 use SchoolDiaryBundle\Entity\SchoolClass;
 use SchoolDiaryBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class StudentController extends Controller
@@ -21,36 +24,25 @@ class StudentController extends Controller
     }
 
     /**
-     * @Route("/student/schedule", name="student_schedule")
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @Route("/student/grades", name="student_grades")
      */
-    public function scheduleAction()
+    public function personalGrades()
     {
         /**
-         * @var User $user;
+         * @var User $user
          */
         $user = $this->getUser();
-        $studentClassId = $user
-            ->getStudentClass()
-            ->getId();
 
-        $studentClass = $this
-            ->getDoctrine()
-            ->getRepository(SchoolClass::class)
-            ->findOneBy(['id' => $studentClassId]);
+        if (null !== $user->getStudentClass()) {
+            $grades = $user->getPersonalGrades();
 
-        $scheduleId = $studentClass
-            ->getSchedule()
-            ->getId();
+            return $this->render('student/grades.html.twig', array(
+                'grades' => $grades,
+                'user' => $user
+            ));
+        }
 
-        $daysInSchedule = $this
-            ->getDoctrine()
-            ->getRepository(Days::class)
-            ->findBy(['schedule' => $scheduleId]);
+        return $this->render('student/grades.html.twig');
 
-
-        return $this->render('student/schedule.html.twig', array(
-            'test' => $daysInSchedule
-        ));
     }
 }

@@ -124,7 +124,7 @@ class User implements UserInterface
     /**
      * @var ArrayCollection
      *
-     * @ORM\ManyToMany(targetEntity="PersonalGrades")
+     * @ORM\ManyToMany(targetEntity="PersonalGrades", inversedBy="student")
      * @ORM\JoinTable(name="students_grades",
      *     joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
      *     inverseJoinColumns={@ORM\JoinColumn(name="personal_grade_id", referencedColumnName="id", unique=true)})

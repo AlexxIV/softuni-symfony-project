@@ -1,41 +1,34 @@
 {% extends 'base.html.twig' %}
 {% block main %}
     <div class="row mt-5">
-        <div class="col-8 offset-2">
+        <div class="col-12">
             <div class="row">
-                <div class="col-4">First Name:</div>
-                <div class="col-8">{{ student.firstName }}</div>
+                <div class="col-2 text-center">First Name</div>
+                <div class="col-2 text-center">Last Name</div>
+                <div class="col-2 text-center">Email</div>
+                <div class="col-2 text-center">Personal ID</div>
+                <div class="col-2 text-center">Grade</div>
+                <div class="col-2 text-center">Actions</div>
             </div>
-            <div class="row">
-                <div class="col-4">Last Name:</div>
-                <div class="col-8">{{ student.lastName }}</div>
+            <div class="row mt-2">
+                <div class="col-2 full-border">{{ student.firstName }}</div>
+                <div class="col-2 full-border">{{ student.lastName }}</div>
+                <div class="col-2 full-border">{{ student.email }}</div>
+                <div class="col-2 full-border">{{ student.personalID }}</div>
+                <div class="col-2 full-border">{{ student.grade }}</div>
+                <div class="col-2 full-border">
+                    <button class="btn-block btn-primary btn btn-show-grades">Show Grades <span class="ml-2"> <i class="fas fa-arrow-right animation"></i></span></button>
+                </div>
             </div>
-            <div class="row">
-                <div class="col-4">Email:</div>
-                <div class="col-8">{{ student.email }}</div>
-            </div>
-            <div class="row">
-                <div class="col-4">Personal ID:</div>
-                <div class="col-8">{{ student.personalID }}</div>
-            </div>
-            <div class="row">
-                <div class="col-4">Grade:</div>
-                <div class="col-8">{{ student.grade }}</div>
-            </div>
-        </div>
-    </div>
-    <div class="row mt-5">
-        <div class="col-12 text-center mt-1 mb-5">
-            <button class="btn-primary btn btn-show-grades">Show Grades <span class="ml-2"> <i class="fas fa-arrow-right animation"></i></span></button>
         </div>
     </div>
     <div class="row grades d-none">
         <div class="col-12">
-            <div class="row">
-                <div class="col-3">Course*</div>
-                <div class="col-3">Grade*</div>
-                <div class="col-3">Notes</div>
-                <div class="col-3">Actions</div>
+            <div class="row mt-2">
+                <div class="col-3 text-center">Course*</div>
+                <div class="col-3 text-center">Grade*</div>
+                <div class="col-3 text-center">Notes</div>
+                <div class="col-3 text-center">Actions</div>
             </div>
             {% for grade in grades %}
                 <div class="row m-3">
@@ -68,3 +61,24 @@
         </div>
     </div>
 {% endblock %}
+
+{#<div class="row">#}
+    {#<div class="col-4">First Name:</div>#}
+    {#<div class="col-8">{{ student.firstName }}</div>#}
+{#</div>#}
+{#<div class="row">#}
+    {#<div class="col-4">Last Name:</div>#}
+    {#<div class="col-8">{{ student.lastName }}</div>#}
+{#</div>#}
+{#<div class="row">#}
+    {#<div class="col-4">Email:</div>#}
+    {#<div class="col-8">{{ student.email }}</div>#}
+{#</div>#}
+{#<div class="row">#}
+    {#<div class="col-4">Personal ID:</div>#}
+    {#<div class="col-8">{{ student.personalID }}</div>#}
+{#</div>#}
+{#<div class="row">#}
+    {#<div class="col-4">Grade:</div>#}
+    {#<div class="col-8">{{ student.grade }}</div>#}
+{#</div>#}

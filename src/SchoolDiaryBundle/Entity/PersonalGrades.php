@@ -51,16 +51,12 @@ class PersonalGrades
     private $notes;
 
     /**
-     * @var ArrayCollection
+     * @var User
      *
      * @ORM\ManyToMany(targetEntity="User", mappedBy="personalGrades")
      */
-    private $students;
+    private $student;
 
-    public function __construct()
-    {
-        $this->students = new ArrayCollection();
-    }
 
     /**
      * Get id
@@ -118,6 +114,16 @@ class PersonalGrades
     public function setNotes(string $notes): void
     {
         $this->notes = $notes;
+    }
+
+    public function getStudent()
+    {
+        return $this->student;
+    }
+
+    public function setStudent(User $student)
+    {
+        $this->student = $student;
     }
 
 
