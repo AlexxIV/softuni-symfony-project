@@ -7,6 +7,7 @@ import '@fortawesome/fontawesome-free/js/all';
 import './forms';
 import './ajax-crud';
 import './fe-animations';
+import './schedule';
 
 import '../css/main.scss';
 

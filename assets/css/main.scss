@@ -1,17 +1,26 @@
 @import "~bootstrap/scss/bootstrap";
 @import "~@fortawesome/fontawesome-free/css/all.css";
+
+@import "_helpers/variables";
+@import "_helpers/helpers";
+@import "_helpers/animations";
+
 @import "footer";
 @import "navbar";
 @import "tables";
-
-@import "_helpers/helpers";
-@import "_helpers/animations";
+@import "custom-tables";
+@import "forms";
 
 html,
 body {
   margin:0;
   padding:0;
   height:100%;
+  color: #fff;
+}
+
+body {
+  background: url('images/background.jpg');
 }
 
 #main-wrapper {

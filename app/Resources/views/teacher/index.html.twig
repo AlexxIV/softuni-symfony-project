@@ -1,104 +1,87 @@
 {% extends 'base.html.twig' %}
 {% block main %}
     {% if emptyClasses is defined and emptyClasses|length > 0 %}
-            <h2 class="text-center m-5">You do not have a teaching class for the moment.<br/>Please select available class from the list: </h2>
-            {% for emptyClass in emptyClasses %}
+        <h2 class="text-center m-5">You do not have a teaching class for the moment.<br/>Please select available class
+            from the list: </h2>
+        {% for emptyClass in emptyClasses %}
             <div class="row">
                 <div class="col-6 offset-3 mt-2 mb-2">
                     <span class="font-weight-bold">Grade:</span> {{ emptyClass.name }}
-                    <a href="{{ path('teacher_subscribe', {'id': emptyClass.id,}) }}" class="float-right btn-primary btn">Select <i class="ml-1 fas fa-arrow-right"></i></a>
+                    <a href="{{ path('teacher_subscribe', {'id': emptyClass.id,}) }}"
+                       class="float-right btn-primary btn">Select <i class="ml-1 fas fa-arrow-right"></i></a>
                 </div>
             </div>
-            {% endfor %}
-        {% else %}
-            <h2 class="text-center m-5">Welcome!</h2>
-            <h3 class="text-center m-2">You currently teaching: <span>{{ teacherClass.name }}</span> grade</h3>
-            {% if unsubscribedStudents is defined and unsubscribedStudents|length > 0 %}
-                <h3 class="text-center m-2 mt-5">Unregistered Students: </h3>
-                <div class="row">
-                    <div class="col-10 offset-1 mt-5 mb-5">
-                        <div class="row">
-                            <div class="col-3">
-                                <h4 class="text-center">First name</h4>
-                            </div>
-                            <div class="col-3">
-                                <h4 class="text-center">Last name</h4>
-                            </div>
-                            <div class="col-3">
-                                <h4 class="text-center">Personal ID</h4>
-                            </div>
-                            <div class="col-3">
-                                <h4 class="text-center">Actions</h4>
-                            </div>
-                        </div>
-                        {% for unregisteredStudent in unsubscribedStudents %}
-                            <div class="row m-2">
-                                <div class="col-3">
-                                    <h5>
-                                        {{ unregisteredStudent.firstName }}
-                                    </h5>
-                                </div>
-                                <div class="col-3">
-                                    <h5>
-                                        {{ unregisteredStudent.lastName }}
-                                    </h5>
-                                </div>
-                                <div class="col-3">
-                                    <h5>
-                                        {{ unregisteredStudent.personalId }}
-                                    </h5>
-                                </div>
-                                <div class="col-3 text-center">
-                                    <a href="{{ path('teacher_register_student', {'id': unregisteredStudent.id}) }}" class="btn-success btn">Register</a>
-                                </div>
-                            </div>
-                        {% endfor %}
+        {% endfor %}
+    {% else %}
+        <h2 class="text-center m-5">Welcome!</h2>
+        <h3 class="text-center m-2">You currently teaching: <span>{{ teacherClass.name }}</span> grade</h3>
+        {% if unsubscribedStudents is defined and unsubscribedStudents|length > 0 %}
+            <h3 class="text-center m-2 mt-5">Unregistered Students: </h3>
+            <div class="row">
+                <div class="col-10 offset-1 mt-5 mb-5">
+                    <div class="custom-table-temlate">
+                        <div class="header">Registered Students</div>
+                        <table cellspacing="0">
+                            <tr>
+                                <th>Picture</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Email</th>
+                                <th>Personal ID</th>
+                                <th>Actions</th>
+                            </tr>
+                            {% for student in unsubscribedStudents %}
+                                <tr>
+                                    <td><img src="{{ asset('uploads/images/' ~ student.image) }}" alt=""></td>
+                                    <td>{{ student.firstName }}</td>
+                                    <td>{{ student.lastName }}</td>
+                                    <td>{{ student.email }}</td>
+                                    <td>{{ student.personalId }}</td>
+                                    <td class="text-center">
+                                        <a href="{{ path('teacher_register_student', {'id': student.id}) }}"
+                                           class="btn-success btn">Register</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
                     </div>
                 </div>
-            {% endif %}
-            {% if students is defined and students|length > 0 %}
-            <h3 class="text-center m-2 mt-5">Registered Students: </h3>
-                <div class="row">
-                    <div class="col-10 offset-1 mt-5 mb-5">
-                        <div class="row">
-                            <div class="col-3">
-                                <h4 class="text-center">First name</h4>
-                            </div>
-                            <div class="col-3">
-                                <h4 class="text-center">Last name</h4>
-                            </div>
-                            <div class="col-3">
-                                <h4 class="text-center">Personal ID</h4>
-                            </div>
-                            <div class="col-3">
-                                <h4 class="text-center">Actions</h4>
-                            </div>
-                        </div>
-                        {% for student in students %}
-                            <div class="row m-2">
-                                <div class="col-3">
-                                    <h5>
-                                        {{ student.firstName }}
-                                    </h5>
-                                </div>
-                                <div class="col-3">
-                                    <h5>
-                                        {{ student.lastName }}
-                                    </h5>
-                                </div>
-                                <div class="col-3">
-                                    <h5>
-                                        {{ student.personalId }}
-                                    </h5>
-                                </div>
-                                <div class="col-3 text-center">
-                                    <a href="{{ path('teacher_details', {'id': student.id}) }}" class="btn-success btn">Details</a>
-                                    <a href="" class="btn-danger btn">Remove</a>
-                                </div>
-                            </div>
-                        {% endfor %}
+            </div>
+        {% endif %}
+        {% if students is defined and students|length > 0 %}
+            <div class="row">
+                <div class="col-10 offset-1 mt-5 mb-5">
+                    <div class="custom-table-temlate">
+                        <div class="header">Registered Students</div>
+                        <table cellspacing="0">
+                            <tr>
+                                <th>Picture</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Email</th>
+                                <th>Personal ID</th>
+                                <th>Actions</th>
+                            </tr>
+                            {% for student in students %}
+                                <tr>
+                                    <td><img src="{{ asset('uploads/images/' ~ student.image) }}" alt=""></td>
+                                    <td>{{ student.firstName }}</td>
+                                    <td>{{ student.lastName }}</td>
+                                    <td>{{ student.email }}</td>
+                                    <td>{{ student.personalId }}</td>
+                                    <td class="text-center">
+                                        <a href="{{ path('teacher_details', {'id': student.id}) }}"
+                                           class="btn-success btn">Details</a>
+                                        <a href="{{ path('teacher_remove_student', {'id': student.id}) }}"
+                                           class="btn-danger btn">Remove</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
                     </div>
                 </div>
-            {% endif %}
+            </div>
+        {% endif %}
     {% endif %}
 {% endblock %}
+

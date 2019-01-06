@@ -10,9 +10,9 @@
             <button class="btn-danger btn" id="teacher-register">Register as Teacher <i class="fas fa-university"></i></button>
         </div>
     </div>
-    <div class="row d-none" id="register-form">
+    <div class="row">
         <div class="col-sm-6 offset-sm-3">
-            {{ form(form, {'method': 'POST', 'action': path('user_register'), 'attr' : { 'class': 'p-3' } }) }}
+            {{ form(form, {'method': 'POST', 'action': path('user_register'), 'attr' : { 'class': 'p-3', 'id': 'register-form' } }) }}
         </div>
     </div>
 {% endblock %}

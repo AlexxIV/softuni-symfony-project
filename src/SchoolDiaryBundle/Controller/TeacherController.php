@@ -131,6 +131,7 @@ class TeacherController extends Controller
     /**
      * @Route("/teacher/student/register/{id}", name="teacher_register_student")
      * @param $id
+     * @return RedirectResponse
      */
     public function studentRegisterAction($id)
     {
@@ -161,6 +162,36 @@ class TeacherController extends Controller
         $this->addFlash('success', 'Student registered successfully!');
         return $this->redirectToRoute('teacher_home');
 
+    }
+
+    /**
+     * @Route("/teacher/student/remove/{id}", name="teacher_remove_student")
+     * @param $id
+     * @return RedirectResponse
+     */
+    public function studentRemoveAction($id)
+    {
+        $student = $this
+            ->getDoctrine()
+            ->getRepository(User::class)
+            ->find($id);
+
+        if (null === $student->getStudentClass()) {
+            $this->addFlash('info', 'The students is not registered!');
+            $this->redirectToRoute('teacher_home');
+        }
+
+        $em = $this
+            ->getDoctrine()
+            ->getManager();
+
+        $student->setStudentClass(null);
+
+        $em->persist($student);
+        $em->flush();
+
+        $this->addFlash('success', 'Student removed successfully!');
+        return $this->redirectToRoute('teacher_home');
     }
 
     /**

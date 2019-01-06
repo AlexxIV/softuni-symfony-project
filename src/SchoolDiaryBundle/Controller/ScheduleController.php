@@ -32,6 +32,7 @@ class ScheduleController extends Controller
                 ->find($scheduleId);
 
             $days = $schedule->getDays();
+
             return $this->render('student/schedule.html.twig', array(
                 'days' => $days
             ));
@@ -51,27 +52,14 @@ class ScheduleController extends Controller
          * @var User $user;
          */
         $user = $this->getUser();
-        $studentClassId = $user
-            ->getStudentClass()
-            ->getId();
+        $teacherClass = $user->getTeacherClass();
 
-        $studentClass = $this
-            ->getDoctrine()
-            ->getRepository(SchoolClass::class)
-            ->findOneBy(['id' => $studentClassId]);
+        $schedule = $teacherClass
+            ->getSchedule();
+        $days = $schedule->getDays();
 
-        $scheduleId = $studentClass
-            ->getSchedule()
-            ->getId();
-
-        $daysInSchedule = $this
-            ->getDoctrine()
-            ->getRepository(Days::class)
-            ->findBy(['schedule' => $scheduleId]);
-
-
-        return $this->render('student/schedule.html.twig', array(
-            'test' => $daysInSchedule
+        return $this->render('teacher/schedule.html.twig', array(
+            'days' => $days
         ));
     }
 

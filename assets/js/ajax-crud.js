@@ -1,5 +1,6 @@
 exports.default = (() => {
 
+    // Delete selected grade
     $('#main-wrapper').on('click', '.grade-delete', function (e) {
         e.preventDefault();
         let url = $(this).attr('href');
@@ -20,162 +21,218 @@ exports.default = (() => {
             });
     });
 
+    // Initial edit click
     $('#main-wrapper').on('click', '.grade-edit', function (e) {
         e.preventDefault();
 
+        let backupRow = $(e.target).parent().parent().clone();
+        backupRow.addClass('backupRow');
+
         let editUrl = $(e.target).attr('href');
         let gradeRow = $(e.target).parent().parent();
-        let gradeName = gradeRow.find('.grade-name').text().trim();
-        let gradeValue = gradeRow.find('.grade-value').text().trim();
-        let gradeNotes = gradeRow.find('.grade-notes').text().trim();
+        gradeRow.after(backupRow.hide());
+        let newBtns = '<a class="btn-success btn btn-edit-grade temp-btn" href="' + editUrl + '" >Save</a>' +
+                      '<button class="btn-danger btn grade-edit-cancel ml-1 temp-btn">Cancel</button>';
+        let editFields = gradeRow
+            .find('td:not(.text-center)')
+            .each(function (index, element) {
+                $(element)
+                    .attr('contenteditable', 'true')
+                    .addClass('editing');
+            });
+        editFields[0].focus();
 
-        let editForm =
-            '<div class="row m-3">' +
-            '<div class="col-12">' +
-            '<form class="form-inline" id="grade-edit-form">' +
-            '<div class="form-group col-3"><input class="form-control" type="text" name="gradeName" value="' + gradeName + '"/></div>' +
-            '<div class="form-group col-3"><input class="form-control" type="text" name="gradeValue" value="' + gradeValue + '"/></div>' +
-            '<div class="form-group col-3"><input class="form-control" type="text" name="gradeNotes" value="' + gradeNotes + '"/></div>' +
-            '<div class="form-group col-3">' +
-            '<button class="btn-success btn" type="submit">Save</button>' +
-            '<button class="btn-light btn grade-edit-cancel ml-1">Cancel</button>' +
-            '</div>' +
-            '<input type="hidden" id="edit-url" value="' + editUrl + '">' +
-        '</form>' +
-        '</div>' +
-        '</div>';
-
-        gradeRow.after(editForm);
-        gradeRow.hide();
+        let actionBtns = gradeRow.find('td.text-center');
+        actionBtns.children().hide();
+        actionBtns.append(newBtns);
     });
 
-    $('#main-wrapper').on('submit', '#grade-edit-form', function (e) {
+    // Submit edit
+    $('#main-wrapper').on('click', '.btn-edit-grade', function (e) {
         e.preventDefault();
-        let url = $(this).find('#edit-url').val();
-
-        let form = $(this);
+        let editUrl = $(e.target).attr('href');
+        let gradeRow = $(e.target).parent().parent();
+        let editFields = gradeRow.find('td:not(.text-center)');
+        let form = createForm([$(editFields[0]).text(), $(editFields[1]).text(), $(editFields[2]).text()]);
 
         $.ajax({
             type: "POST",
-            url: url,
-            data: form.serialize(), // serializes the form's elements.
+            url: editUrl,
+            data: $(form).serialize(), // serializes the form's elements.
             success: function (data) {
-                let activeRow = ($(e.target).closest('.row'));
-                let editedRow = activeRow.prev();
+                form.remove();
+                $(editFields[0]).text(data.newName).attr('contenteditable', 'false').removeClass('editing');
+                $(editFields[1]).text(data.newValue).attr('contenteditable', 'false').removeClass('editing');
+                $(editFields[2]).text(data.newNotes).attr('contenteditable', 'false').removeClass('editing');
 
-                editedRow.find('.grade-name').text(data.newName);
-                editedRow.find('.grade-value').text(data.newValue);
-                editedRow.find('.grade-notes').text(data.newNotes);
+                $(editFields).each(function (index, element) {
+                    $(element)
+                        .attr('contenteditable', 'false')
+                        .removeClass('editing');
+                });
 
-                activeRow.remove();
-                editedRow.show();
+                let btns = gradeRow.find('td.text-center .temp-btn');
+                btns.remove();
+
+                gradeRow.find('td.text-center').children().show();
 
                 $('#main').prepend("<div class='ajax-message text-center alert alert-success'>" + data.message + "</div>");
                 setTimeout(function () {
                     $('.ajax-message').fadeOut().remove();
-                }, 3000);
+                }, 4000);
+
             },
             error: function (data) {
+                form.remove();
+                $(editFields[1]).focus();
                 let errorMessage = (data.responseJSON.message);
                 $('#main').prepend("<div class='ajax-message text-center alert alert-danger'>" + errorMessage + "</div>");
                 setTimeout(function () {
                     $('.ajax-message').fadeOut().remove();
-                }, 3000);
+                }, 5000);
             }
         });
     });
 
+    // Cancel edit
     $('#main-wrapper').on('click', 'button.grade-edit-cancel', function (e) {
-        let activeRow = ($(e.target).closest('.row'));
-        activeRow.prev().show();
-        activeRow.remove();
-        $('#grade-add').show();
+        let activeRow = $(e.target).parent().parent();
+        if ($(this).hasClass('cancel-adding')) {
+            let editFields = activeRow
+                .find('td:not(.text-center)')
+                .each(function (index, element) {
+                    $(element)
+                        .attr('contenteditable', 'false')
+                        .removeClass('editing')
+                        .text('');
+                });
+        } else {
+            activeRow.next().show();
+            activeRow.remove();
+            let editFields = activeRow
+                .find('td:not(.text-center)')
+                .each(function (index, element) {
+                    $(element)
+                        .attr('contenteditable', 'false')
+                        .removeClass('editing');
+                });
+        }
+
+        let btns = activeRow.find('td.text-center .temp-btn');
+        btns.remove();
+
+        activeRow.find('td.text-center').children().show();
     });
 
+    // Add grade
     $('#main-wrapper').on('click', 'a#grade-add', function (e) {
         e.preventDefault();
-        $(e.target).hide();
         let addUrl = $(e.target).attr('href');
-        let gradeRow = $(e.target).parent();
+        let currentRow = $(e.target).parent().parent();
+        if (currentRow.parent().find('.empty-row').length > 0) {
+            currentRow.parent().find('.empty-row').remove();
+        }
+        let emptyRow = currentRow.clone();
+        emptyRow.addClass('empty-row d-none');
+        currentRow.parent().append(emptyRow);
 
-        let editForm =
-            '<div class="row m-3">' +
-            '<div class="col-12">' +
-            '<form class="form-inline" id="grade-add-form">' +
-            '<div class="form-group col-3">' +
-            '<label for="grade-name">Course*</label>' +
-            '<input id="grade-name" class="form-control" type="text" name="gradeName"/>' +
-            '</div>' +
-            '<div class="form-group col-3">' +
-            '<label for="grade-value">Value*</label>' +
-            '<input id="grade-value" class="form-control" type="text" name="gradeValue"/>' +
-            '</div>' +
-            '<div class="form-group col-3">' +
-            '<label for="grade-notes">Notes</label>' +
-            '<input id="grade-notes" class="form-control" type="text" name="gradeNotes"/>' +
-            '</div>' +
-            '<div class="form-group col-3">' +
-            '<button class="btn-primary btn" type="submit">Add</button>' +
-            '<button class="btn-light btn grade-edit-cancel ml-1">Cancel</button>' +
-            '</div>' +
-            '<input type="hidden" id="add-url" value="' + addUrl + '">' +
-        '</form>' +
-        '</div>' +
-        '</div>';
+        let newBtns = '<a class="btn-success btn btn-add-grade temp-btn" href="' + addUrl + '" >Save</a>' +
+                      '<button class="btn-danger btn grade-edit-cancel cancel-adding ml-1 temp-btn">Cancel</button>';
 
-        gradeRow.prepend(editForm);
+        let addFields = currentRow
+            .find('td:not(.text-center)')
+            .each(function (index, element) {
+                $(element)
+                    .attr('contenteditable', 'true')
+                    .addClass('adding');
+            });
+
+        addFields[0].focus();
+
+        let actionBtns = currentRow.find('td.text-center');
+        actionBtns.children().hide();
+        actionBtns.append(newBtns);
     });
 
-    $('#main-wrapper').on('submit', '#grade-add-form', function (e) {
+    // Submit add
+    $('#main-wrapper').on('click', '.btn-add-grade', function (e) {
         e.preventDefault();
-        let url = $(this).find('#add-url').val();
-        console.log(url);
-        let form = $(this);
+        let addUrl = $(e.target).attr('href');
+        let gradeRow = $(e.target).parent().parent();
+        let addFields = gradeRow.find('td:not(.text-center)');
+        let form = createForm([$(addFields[0]).text(), $(addFields[1]).text(), $(addFields[2]).text()]);
 
         $.ajax({
             type: "POST",
-            url: url,
-            data: form.serialize(), // serializes the form's elements.
+            url: addUrl,
+            data: $(form).serialize(),
             success: function (data) {
-                let activeRow = ($(e.target).closest('.row'));
-                let newRowParent = activeRow.parent().prev();
+                form.remove();
+                $(addFields[0]).text(data.newName).attr('contenteditable', 'false').removeClass('editing');
+                $(addFields[1]).text(data.newValue).attr('contenteditable', 'false').removeClass('editing');
+                $(addFields[2]).text(data.newNotes).attr('contenteditable', 'false').removeClass('editing');
 
-                let newRow =
-                    '<div class="row m-3">' +
-                        '<div class="col-3 grade-name">' +
-                            data.newName +
-                        '</div>' +
-                        '<div class="col-3 grade-value">' +
-                            data.newGradeValue +
-                        '</div>' +
-                        '<div class="col-3 grade-notes">' +
-                            data.newNotes +
-                        '</div>' +
-                        '<div class="col-3 grade-actions">' +
-                            '<a href="/teacher/student/grades/edit/' + data.newId + '" class="btn-success btn grade-edit" id="btn-edit-' + data.newId + '">Edit</a>' +
-                            '<a href="/teacher/student/grades/delete/' + data.newId + '" class="btn-danger btn grade-delete ml-1" id="btn-delete-' + data.newId + '">Delete</a>' +
-                        '</div>' +
-                    '</div>';
+                $(addFields).each(function (index, element) {
+                    $(element)
+                        .attr('contenteditable', 'false')
+                        .removeClass('editing');
+                });
 
-                newRowParent.append(newRow);
-                activeRow.hide();
+                let tempBtns = gradeRow.find('td.text-center .temp-btn');
+                let newBtns = '<a class="btn-success btn grade-edit" id="btn-edit-' + data.newId + '" href="/teacher/student/grades/edit/' + data.newId + '" >Edit</a>' +
+                              '<a class="btn-danger btn grade-delete ml-1" id="btn-delete-' + data.newId + '"href="/teacher/student/grades/delete/' + data.newId + '">Delete</a>';
+                tempBtns.remove();
 
+                gradeRow.parent().find('.empty-row').removeClass('d-none');
+                // let addBtn = gradeRow.find('#grade-add');
+                // let newRow = gradeRow.clone();
+                // console.log(addBtn);
+                // console.log(newRow);
+                // console.log(emptyGradeRow);
+                //let newRow = '<tr><td></td><td></td><td></td><td class="text-center"></td></tr>';
+                // gradeRow.parent().append(newRow);
+                gradeRow.find('td.text-center').append(newBtns);
 
                 $('#main').prepend("<div class='ajax-message text-center alert alert-success'>" + data.message + "</div>");
                 setTimeout(function () {
                     $('.ajax-message').fadeOut().remove();
-                }, 3000);
+                }, 4000);
 
-                $('#grade-add').show();
             },
             error: function (data) {
+                form.remove();
+                $(addFields[1]).focus();
                 let errorMessage = (data.responseJSON.message);
                 $('#main').prepend("<div class='ajax-message text-center alert alert-danger'>" + errorMessage + "</div>");
                 setTimeout(function () {
                     $('.ajax-message').fadeOut().remove();
-                }, 3000);
+                }, 5000);
             }
-        });
+        })
     });
 
+    function createForm([name, value, notes]) {
+        let form = document.createElement("form");
+        let element1 = document.createElement("input");
+        element1.name = "gradeName";
+        element1.value = name;
+        element1.type = 'text';
+        form.appendChild(element1);
+        let element2 = document.createElement("input");
+        element2.name = "gradeValue";
+        element2.value = value;
+        element2.type = 'text';
+        form.appendChild(element2);
+        let element3 = document.createElement("input");
+        element3.name = "gradeNotes";
+        element3.value = notes;
+        element3.type = 'text';
+        form.appendChild(element3);
+
+        return form;
+    }
+
+
 })();
+
+

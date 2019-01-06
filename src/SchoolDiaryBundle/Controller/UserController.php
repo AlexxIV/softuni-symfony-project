@@ -12,6 +12,8 @@ use SchoolDiaryBundle\Form\UserType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -64,6 +66,20 @@ class UserController extends Controller
                 return $this->render('user/register.html.twig');
             }
 
+            /** @var UploadedFile $file */
+            $file = $form->getData()->getImage();
+
+            $fileName = md5(uniqid()) . '.' . $file->guessExtension();
+
+            try {
+                $file->move($this->getParameter('images_directory'),
+                    $fileName);
+            } catch (FileException $ex) {
+                $this->addFlash('danger', 'Image upload failed');
+                return $this->render('user/register.html.twig');
+            }
+
+            $user->setImage($fileName);
             $password = $this->get('security.password_encoder')
                 ->encodePassword($user, $user->getPassword());
 

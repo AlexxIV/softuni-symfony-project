@@ -131,6 +131,13 @@ class User implements UserInterface
      */
     private $personalGrades;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="image", type="string", nullable=false)
+     */
+    private $image;
+
     public function __construct()
     {
         $this->roles = new ArrayCollection();
@@ -344,10 +351,7 @@ class User implements UserInterface
         return $this->studentClass;
     }
 
-    /**
-     * @param SchoolClass $studentClass
-     */
-    public function setStudentClass(SchoolClass $studentClass): void
+    public function setStudentClass($studentClass): void
     {
         $this->studentClass = $studentClass;
     }
@@ -379,6 +383,22 @@ class User implements UserInterface
     public function setPersonalGrades(ArrayCollection $personalGrades): void
     {
         $this->personalGrades = $personalGrades;
+    }
+
+    /**
+     * @return string
+     */
+    public function getImage()
+    {
+        return $this->image;
+    }
+
+    /**
+     * @param string $image
+     */
+    public function setImage($image)
+    {
+        $this->image = $image;
     }
 
 
