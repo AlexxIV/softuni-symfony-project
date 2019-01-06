@@ -31,5 +31,25 @@ exports.default = (() => {
         }
     })
 
+    $(document).ready(function () {
+        let regForm = $('#register-form');
+        let errors = regForm.find('.is-invalid');
 
+        if(errors.length > 0) {
+            let teacher = regForm.find('#user_isTeacher').val();
+            switch (teacher) {
+                case '1':
+                    $('#main-wrapper').find('#teacher-register').addClass('out').hide();
+                    regForm.find('#user_grade').parent().hide();
+                    regForm.show();
+                    break;
+                case '0':
+                    $('#main-wrapper').find('#student-register').addClass('out').hide();
+                    regForm.fadeIn();
+                    break;
+                default: return;
+            }
+        }
+
+    })
 })();

@@ -28,14 +28,27 @@
                     >Home</a>
                 </li>
             </ul>
-            {{ path('homepage') }}
             <ul class="navbar-nav ml-auto">
                 {% if app.user %}
                     {% if is_granted('ROLE_ADMIN') %}
                         {# TODO #}
                     {% endif %}
-                    <li class="nav-item {% if app.request.attributes.get('_route') == 'student_schedule' %}active{% endif %}">
-                        <a class="nav-link" href="{{ path('student_schedule') }}">Weekly Schedule</a>
+                    {% if app.user and is_granted('ROLE_USER') and not is_granted('ROLE_TEACHER') and not is_granted('ROLE_ADMIN') %}
+                        <li class="nav-item {% if app.request.attributes.get('_route') == 'student_grades'%}active{% endif %}">
+                            <a class="nav-link"
+                               href="{{ path('student_grades') }}"
+                            >Grades Book</a>
+                        </li>
+                    {% endif %}
+                    <li class="nav-item {% if app.request.attributes.get('_route') == 'student_schedule' or app.request.attributes.get('_route') == 'teacher_schedule' %}active{% endif %}">
+                        <a class="nav-link"
+                            href="
+                            {% if is_granted('ROLE_TEACHER') %}
+                                {{ path('teacher_schedule') }}
+                            {% else %}
+                                {{ path('student_schedule') }}
+                            {% endif %}"
+                        >Weekly Schedule</a>
                     </li>
                     <li class="mr-5 nav-item {% if app.request.attributes.get('_route') == 'user_profile' %}active{% endif %}">
                         <a class="nav-link" href="{{ path('user_profile') }}">My Profile</a>

@@ -1,3 +1,92 @@
 .cursor-d {
   cursor: default;
 }
+
+.navbar-dark .navbar-nav .show > .nav-link,
+.navbar-dark .navbar-nav .active > .nav-link,
+.navbar-dark .navbar-nav .nav-link.show,
+.navbar-dark .navbar-nav .nav-link.active {
+  color: $baseColor;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.navbar-dark .navbar-nav .nav-link:hover,
+.navbar-dark .navbar-nav .nav-link:focus {
+  color: $baseColor;
+}
+
+.btn-primary {
+  background-color: #fff;
+  color: $primaryBtnColor;
+  border-color: $primaryBtnColor;
+
+  &:hover,
+  &:focus {
+    background-color: $primaryBtnColor;
+    color: #fff;
+    border-color: #fff;
+  }
+  &:active {
+    background-color: darken($baseColor, 10%) !important;
+    color: #fff !important;
+    border-color: darken($baseColor, 20%) !important;
+  }
+  &:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255, 118, 56, 0.5);
+  }
+}
+
+.btn-success {
+  background-color: #fff;
+  color: $successBtnColor;
+  border-color: $successBtnColor;
+
+  &:hover,
+  &:focus {
+    background-color: $successBtnColor;
+    color: #fff;
+    border-color: #fff;
+  }
+  &:active {
+    background-color: darken($successBtnColor, 10%) !important;
+    color: #fff !important;
+    border-color: darken($successBtnColor, 20%) !important;
+  }
+  &:focus {
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.5)
+  }
+}
+
+.btn-danger {
+  background-color: #fff;
+  color: $dangerBtnColor;
+  border-color: $dangerBtnColor;
+
+  &:hover,
+  &:focus {
+    background-color: $dangerBtnColor;
+    color: #fff;
+    border-color: #fff;
+  }
+  &:active {
+    background-color: darken($dangerBtnColor, 10%) !important;
+    color: #fff !important;
+    border-color: darken($dangerBtnColor, 20%) !important;
+  }
+  &:focus {
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.5)
+  }
+}
+
+.btn-link {
+  color: $primaryBtnColor;
+  background-color: transparent;
+  border-color: $primaryBtnColor;
+  &:hover {
+    text-decoration: underline;
+    color: lighten($primaryBtnColor, 30%);
+  }
+}

@@ -24,10 +24,11 @@ class Days
     /**
      * @var Schedule
      *
-     * @ORM\ManyToOne(targetEntity="Schedule", inversedBy="days")
-     * @ORM\JoinColumn(name="schedule_id", referencedColumnName="id")
+     * @ORM\ManyToMany(targetEntity="Schedule", mappedBy="days")
+     *
      */
     private $schedule;
+
     /**
      * @var string
      * @ORM\Column(name="day", type="string")

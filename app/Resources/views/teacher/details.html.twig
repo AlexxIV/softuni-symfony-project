@@ -1,0 +1,130 @@
+{% extends 'base.html.twig' %}
+{% block main %}
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="custom-table-temlate">
+                <table cellspacing="0">
+                    <tr>
+                        <th>Picture</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Personal ID</th>
+                        <th>Grade</th>
+                        <th>Actions</th>
+                    </tr>
+                    <tr>
+                        <td><img src="{{ asset('uploads/images/' ~ student.image) }}" alt=""></td>
+                        <td>{{ student.firstName }}</td>
+                        <td>{{ student.lastName }}</td>
+                        <td>{{ student.email }}</td>
+                        <td>{{ student.personalId }}</td>
+                        <td>{{ student.grade }}</td>
+                        <td class="text-center">
+                            <button class="btn-block btn-primary btn" id="btn-show-grades">Show Grades <span
+                                        class="ml-2"> <i
+                                            class="fas fa-arrow-right animation"></i></span></button>
+                        </td>
+                    </tr>
+                    <table cellspacing="0" class="table-grades d-none">
+                        <tr>
+                            <th>Course*</th>
+                            <th>Grade*</th>
+                            <th>Notes</th>
+                            <th>Actions</th>
+                        </tr>
+                        {% for grade in grades %}
+                            <tr>
+                                <td>{{ grade.gradename }}</td>
+                                <td>{{ grade.value }}</td>
+                                <td>{{ grade.notes }}</td>
+                                <td class="text-center">
+                                    <a href="{{ path('teacher_edit_grades', {'grade_id': grade.id}) }}"
+                                       class="btn-success btn grade-edit"
+                                       id="btn-edit-{{ grade.id }}"
+                                    >Edit
+                                    </a>
+                                    <a href="{{ path('teacher_delete_grades', {'grade_id': grade.id}) }}"
+                                       class="btn-danger btn grade-delete"
+                                       id="btn-delete-{{ grade.id }}"
+                                    >Delete
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="text-center">
+                                <a href="{{ path('teacher_add_grades', {'student_id': student.id}) }}" class="btn-primary btn"
+                                id="grade-add">Add New</a>
+                            </td>
+                        </tr>
+                    </table>
+                </table>
+
+            </div>
+        </div>
+    </div>
+    {#<div class="row grades d-none">#}
+    {#<div class="col-12">#}
+    {#<div class="row mt-2">#}
+    {#<div class="col-3 text-center">Course*</div>#}
+    {#<div class="col-3 text-center">Grade*</div>#}
+    {#<div class="col-3 text-center">Notes</div>#}
+    {#<div class="col-3 text-center">Actions</div>#}
+    {#</div>#}
+    {#{% for grade in grades %}#}
+    {#<div class="row m-3">#}
+    {#<div class="col-3 grade-name">#}
+    {#{{ grade.gradename }}#}
+    {#</div>#}
+    {#<div class="col-3 grade-value">#}
+    {#{{ grade.value }}#}
+    {#</div>#}
+    {#<div class="col-3 grade-notes">#}
+    {#{{ grade.notes }}#}
+    {#</div>#}
+    {#<div class="col-3 grade-actions">#}
+    {#<a href="{{ path('teacher_edit_grades', {'grade_id': grade.id}) }}"#}
+    {#class="btn-success btn grade-edit"#}
+    {#id="btn-edit-{{ grade.id }}"#}
+    {#>Edit#}
+    {#</a>#}
+    {#<a href="{{ path('teacher_delete_grades', {'grade_id': grade.id}) }}"#}
+    {#class="btn-danger btn grade-delete"#}
+    {#id="btn-delete-{{ grade.id }}"#}
+    {#>Delete#}
+    {#</a>#}
+    {#</div>#}
+    {#</div>#}
+    {#{% endfor %}#}
+    {#</div>#}
+    {#<div class="col-12 mt-5">#}
+    {#<a href="{{ path('teacher_add_grades', {'student_id': student.id}) }}" class="btn-primary btn float-right"#}
+    {#id="grade-add">Add</a>#}
+    {#</div>#}
+    {#</div>#}
+{% endblock %}
+
+{#<div class="row">#}
+    {#<div class="col-4">First Name:</div>#}
+    {#<div class="col-8">{{ student.firstName }}</div>#}
+{#</div>#}
+{#<div class="row">#}
+    {#<div class="col-4">Last Name:</div>#}
+    {#<div class="col-8">{{ student.lastName }}</div>#}
+{#</div>#}
+{#<div class="row">#}
+    {#<div class="col-4">Email:</div>#}
+    {#<div class="col-8">{{ student.email }}</div>#}
+{#</div>#}
+{#<div class="row">#}
+    {#<div class="col-4">Personal ID:</div>#}
+    {#<div class="col-8">{{ student.personalID }}</div>#}
+{#</div>#}
+{#<div class="row">#}
+    {#<div class="col-4">Grade:</div>#}
+    {#<div class="col-8">{{ student.grade }}</div>#}
+{#</div>#}

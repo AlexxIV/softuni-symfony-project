@@ -45,8 +45,6 @@ class DefaultController extends Controller
 //            $this->redirectToRoute('student_home');
 //        }
 //
-        echo '<pre>';
-        var_dump($this->auth_checker->isGranted('ROLE_USER'));
 
         if ($this->auth_checker->isGranted('ROLE_ADMIN')) {
             $this->addFlash('success','Successfully logged in as admin!');

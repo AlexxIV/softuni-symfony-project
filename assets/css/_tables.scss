@@ -1,5 +1,5 @@
 @include media-breakpoint-up(xl) {
-  .table-head {
+  .table-head-day {
     font-size: 25px;
   }
   .table-index,
@@ -8,7 +8,7 @@
   }
 }
 @include media-breakpoint-between(md, lg) {
-  .table-head {
+  .table-head-day {
     font-size: 20px;
   }
   .table-index,
@@ -17,7 +17,7 @@
   }
 }
 @include media-breakpoint-down(md) {
-  .table-head {
+  .table-head-day {
     font-size: 3.5vw;
   }
   .table-index,
@@ -26,7 +26,7 @@
   }
 }
 @include media-breakpoint-down(sm) {
-  .table-head {
+  .table-head-day {
     font-size: 4.5vw;
   }
   .table-index,
@@ -56,4 +56,9 @@
 .table-row:last-of-type {
   border-bottom: none;
 }
+//
+//.full-border {
+//  border: 1px solid black;
+//  padding: 0;
+//}
 

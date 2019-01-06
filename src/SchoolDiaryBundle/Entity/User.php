@@ -121,9 +121,28 @@ class User implements UserInterface
 
     private $grade;
 
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\ManyToMany(targetEntity="PersonalGrades", inversedBy="student")
+     * @ORM\JoinTable(name="students_grades",
+     *     joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="personal_grade_id", referencedColumnName="id", unique=true)})
+     */
+    private $personalGrades;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="image", type="string", nullable=false)
+     */
+    private $image;
+
     public function __construct()
     {
         $this->roles = new ArrayCollection();
+
+        $this->personalGrades = new ArrayCollection();
     }
 
     /**
@@ -270,6 +289,11 @@ class User implements UserInterface
         return $this;
     }
 
+    public function addGrade(PersonalGrades $grade) {
+        $this->personalGrades[] = $grade;
+        return $this;
+    }
+
     public function isAdmin()
     {
         return in_array("ROLE_ADMIN", $this->getRoles());
@@ -327,10 +351,7 @@ class User implements UserInterface
         return $this->studentClass;
     }
 
-    /**
-     * @param SchoolClass $studentClass
-     */
-    public function setStudentClass(SchoolClass $studentClass): void
+    public function setStudentClass($studentClass): void
     {
         $this->studentClass = $studentClass;
     }
@@ -350,5 +371,36 @@ class User implements UserInterface
     {
         $this->grade = $grade;
     }
+
+    public function getPersonalGrades()
+    {
+        return $this->personalGrades;
+    }
+
+    /**
+     * @param ArrayCollection $personalGrades
+     */
+    public function setPersonalGrades(ArrayCollection $personalGrades): void
+    {
+        $this->personalGrades = $personalGrades;
+    }
+
+    /**
+     * @return string
+     */
+    public function getImage()
+    {
+        return $this->image;
+    }
+
+    /**
+     * @param string $image
+     */
+    public function setImage($image)
+    {
+        $this->image = $image;
+    }
+
+
 }
 

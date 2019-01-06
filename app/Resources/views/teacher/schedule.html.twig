@@ -1,0 +1,113 @@
+{% extends 'base.html.twig' %}
+{% block main %}
+    <div class="row">
+        <div class="col-12 schedule-table mt-5">
+            {% if days is defined and days|length > 0 %}
+                <div class="custom-table-temlate" id="editable-schedule">
+                    <div class="header">Weekly Schedule</div>
+                    <table cellspacing="0">
+                        <tr>
+                            {% for day in days %}
+                                <th class="{{ day.day == "now"|date('l') ? 'active-day' : '' }}">{{ day.day }}</th>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for day in days %}
+                                <td class="single-day {{ day.day }}" id="{{ day.id }}">
+                                    <table cellspacing="0">
+                                        <tr class="single-subject-row">
+                                            <td class="single-subject">1. {{ day.first }}</td>
+                                        </tr>
+                                        <tr class="single-subject-row">
+                                            <td class="single-subject">2. {{ day.second }}</td>
+                                        </tr>
+                                        <tr class="single-subject-row">
+                                            <td class="single-subject">3. {{ day.third }}</td>
+                                        </tr>
+                                        <tr class="single-subject-row">
+                                            <td class="single-subject">4. {{ day.fourth }}</td>
+                                        </tr>
+                                        <tr class="single-subject-row">
+                                            <td class="single-subject">5. {{ day.fifth }}</td>
+                                        </tr>
+                                        <tr class="single-subject-row">
+                                            <td class="single-subject">6. {{ day.sixth }}</td>
+                                        </tr>
+                                        <tr class="single-subject-row">
+                                            <td class="single-subject">7. {{ day.seventh }}</td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    </table>
+                    <a href="" class="btn-primary btn float-right mt-5" id="schedule-edit">Edit</a>
+                    <a href="" class="btn-primary btn float-right ml-2 mt-5" style="display: none" id="schedule-save">Save</a>
+                    <a href="" class="btn-primary btn float-right mr-2 mt-5" style="display: none" id="schedule-save-cancel">Cancel</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+
+{#
+<div class="row">
+            <div class="offset-1 col-2">
+                <div class="col-12">Monday</div>
+                <div class="col-12">1</div>
+                <div class="col-12">2</div>
+                <div class="col-12">3</div>
+                <div class="col-12">4</div>
+                <div class="col-12">5</div>
+            </div>
+            <div class="col-2">
+                <div class="col-12">Monday</div>
+                <div class="col-12">1</div>
+                <div class="col-12">2</div>
+                <div class="col-12">3</div>
+                <div class="col-12">4</div>
+                <div class="col-12">5</div>
+            </div>
+            <div class="col-2">
+                <div class="col-12">Monday</div>
+                <div class="col-12">1</div>
+                <div class="col-12">2</div>
+                <div class="col-12">3</div>
+                <div class="col-12">4</div>
+                <div class="col-12">5</div>
+            </div>
+            <div class="col-2">
+                <div class="col-12">Monday</div>
+                <div class="col-12">1</div>
+                <div class="col-12">2</div>
+                <div class="col-12">3</div>
+                <div class="col-12">4</div>
+                <div class="col-12">5</div>
+            </div>
+            <div class="col-2">
+                <div class="col-12">Monday</div>
+                <div class="col-12">1</div>
+                <div class="col-12">2</div>
+                <div class="col-12">3</div>
+                <div class="col-12">4</div>
+                <div class="col-12">5</div>
+            </div>
+        </div>
+
+
+                    {#{% for key,value in schedule %}#}
+                {#<div class="{{ key == 'Monday' ? 'offset-1 ' : '' }}col-2">#}
+                    {#<div class="col-12">{{ key }}</div>#}
+                    {#{% for index, subject in value %}#}
+                        {#<div class="row">#}
+                            {#<div class="col-2">#}
+                                {#{{ index }}#}
+                            {#</div>#}
+                            {#<div class="col-10">#}
+                                {#{{ subject }}#}
+                            {#</div>#}
+                        {#</div>#}
+                    {#{% endfor %}#}
+                {#</div>#}
+            {#{% endfor %}#}
