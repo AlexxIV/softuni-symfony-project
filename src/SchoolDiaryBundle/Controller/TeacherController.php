@@ -2,11 +2,13 @@
 
 namespace SchoolDiaryBundle\Controller;
 
+use SchoolDiaryBundle\Entity\Absences;
 use SchoolDiaryBundle\Entity\Days;
 use SchoolDiaryBundle\Entity\PersonalGrades;
 use SchoolDiaryBundle\Entity\Schedule;
 use SchoolDiaryBundle\Entity\SchoolClass;
 use SchoolDiaryBundle\Entity\User;
+use SchoolDiaryBundle\helpers\StatisticsHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -47,22 +49,71 @@ class TeacherController extends Controller
             ->getRepository(SchoolClass::class)
             ->find($user->getTeacherClass());
 
-        $students = $this
-                ->getDoctrine()
-                ->getRepository(User::class)
-                ->findBy(['studentClass' => $teacherClass->getId()]);
-
         $unsubscribedStudents = $this
                             ->getDoctrine()
                             ->getRepository(User::class)
                             ->findBy(['studentClass' => null, 'grade' => $teacherClass->getName()]);
 
+        // School Grades
+        $allGrades = $this
+                ->getDoctrine()
+                ->getRepository(PersonalGrades::class)
+                ->findAll();
 
+        $allGradesAverage = [];
+        foreach ($allGrades as $grade) {
+            $allGradesAverage[] = $grade->getValue();
+        }
+
+        // School Absences
+        $allUsers = $this
+                    ->getDoctrine()
+                    ->getRepository(User::class)
+                    ->findAll();
+
+        $absencesByUser = [];
+        foreach ($allUsers as $user) {
+            if (in_array('ROLE_TEACHER', $user->getRoles())) {
+                continue;
+            }
+            $absencesByUser[] = count($user->getAbsences());
+        }
+
+        // My Class Grades
+        $user = $this->getUser();
+
+        $allMyClassGrades = $this
+            ->getDoctrine()
+            ->getRepository(PersonalGrades::class)
+            ->getGradesForClass($user->getTeacherClass()->getId());
+
+        $myClassAverageGrades = [];
+
+        foreach ($allMyClassGrades as $grade) {
+            $myClassAverageGrades[] = $grade->getValue();
+        }
+
+        // My Class Absences
+
+        $allStudentsFromMyClass = $this
+            ->getDoctrine()
+            ->getRepository(User::class)
+            ->findBy(['studentClass' => $user->getTeacherClass()->getId()]);
+
+        $myClassMedianAbsences = [];
+        foreach ($allStudentsFromMyClass as $user) {
+            if (in_array('ROLE_TEACHER', $user->getRoles())) {
+                continue;
+            }
+            $myClassMedianAbsences[] = count($user->getAbsences());
+        }
 
         return $this->render('teacher/index.html.twig', array(
-            'students' => $students,
-            'teacherClass' => $teacherClass,
-            'unsubscribedStudents' => $unsubscribedStudents
+            'unsubscribedStudents' => $unsubscribedStudents,
+            'allGradesAverage' => StatisticsHelper::calculate_average($allGradesAverage),
+            'allAbsencesMedian' => StatisticsHelper::calculate_median($absencesByUser),
+            'myClassAllAverageGrades' => StatisticsHelper::calculate_average($myClassAverageGrades),
+            'myClassMedianAbsences' => StatisticsHelper::calculate_median($myClassMedianAbsences)
         ));
     }
 
@@ -160,7 +211,7 @@ class TeacherController extends Controller
         $em->flush();
 
         $this->addFlash('success', 'Student registered successfully!');
-        return $this->redirectToRoute('teacher_home');
+        return $this->redirectToRoute('teacher_students_list');
 
     }
 
@@ -178,7 +229,7 @@ class TeacherController extends Controller
 
         if (null === $student->getStudentClass()) {
             $this->addFlash('info', 'The students is not registered!');
-            $this->redirectToRoute('teacher_home');
+            $this->redirectToRoute('teacher_students_list');
         }
 
         $em = $this
@@ -191,7 +242,7 @@ class TeacherController extends Controller
         $em->flush();
 
         $this->addFlash('success', 'Student removed successfully!');
-        return $this->redirectToRoute('teacher_home');
+        return $this->redirectToRoute('teacher_students_list');
     }
 
     /**
@@ -214,122 +265,40 @@ class TeacherController extends Controller
     }
 
     /**
-     * @Route("/teacher/student/grades/add/{student_id}", name="teacher_add_grades")
-     * @return JsonResponse|RedirectResponse
+     * @Route("/teacher/students", name="teacher_students_list")
+     *
      */
-    public function addStudentGrade($student_id, Request $request)
+    public function studentsListAction()
     {
-        $student = $this
-                ->getDoctrine()
-                ->getRepository(User::class)
-                ->find($student_id);
+        /**
+         * @var User $user
+         */
+        $user = $this->getUser();
 
-        $gradeName = $request->request->get('gradeName');
-        $gradeValue = (int)($request->request->get('gradeValue'));
-        $gradeNotes = $request->request->get('gradeNotes');
-
-        if ($gradeValue > 6 || $gradeValue < 1 || $gradeName === '') {
-            return new JsonResponse(array(
-                'message' => 'Invalid data! Please check your fields. The course and values are required. The value should be in range [1-6].'
-            ),'409');
-        }
-
-        $em = $this
+        /**
+         * @var SchoolClass $teacherClass
+         */
+        $teacherClass = $this
             ->getDoctrine()
-            ->getManager();
+            ->getRepository(SchoolClass::class)
+            ->find($user->getTeacherClass());
 
-        $gradeToAdd = new PersonalGrades();
+        $students = $this
+            ->getDoctrine()
+            ->getRepository(User::class)
+            ->findBy(['studentClass' => $teacherClass->getId()]);
 
-        $gradeToAdd->setGradeName($gradeName);
-        $gradeToAdd->setValue($gradeValue);
-        $gradeToAdd->setNotes($gradeNotes);
+        $unsubscribedStudents = $this
+            ->getDoctrine()
+            ->getRepository(User::class)
+            ->findBy(['studentClass' => null, 'grade' => $teacherClass->getName()]);
 
-        $em->persist($gradeToAdd);
-        $em->flush();
 
-        $student->addGrade($gradeToAdd);
-        $em->persist($student);
-        $em->flush();
 
-        return new JsonResponse(array(
-            'newName' => $gradeName,
-            'newGradeValue' => $gradeValue,
-            'newNotes' => $gradeNotes,
-            'newId' => $gradeToAdd->getId(),
-            'message' => 'Successfully added grade!'
+        return $this->render('teacher/students-list.html.twig', array(
+            'students' => $students,
+            'teacherClass' => $teacherClass,
+            'unsubscribedStudents' => $unsubscribedStudents
         ));
-
-    }
-
-    /**
-     * @Route("/teacher/student/grades/edit/{grade_id}", name="teacher_edit_grades")
-     * @param $grade_id
-     * @return JsonResponse|RedirectResponse
-     */
-    public function editStudentGrade($grade_id, Request $request)
-    {
-
-        $gradeToEdit = $this
-                ->getDoctrine()
-                ->getRepository(PersonalGrades::class)
-                ->find($grade_id);
-
-        if (null !== $gradeToEdit) {
-            $gradeName = $request->request->get('gradeName');
-            $gradeValue = (int)($request->request->get('gradeValue'));
-            $gradeNotes = $request->request->get('gradeNotes');
-
-            if ($gradeValue > 6 || $gradeValue < 1 || $gradeName === '') {
-                return new JsonResponse(array(
-                    'message' => 'Invalid data! Please check your fields. The course and values are required. The value should be in range [1-6].'
-                ),'409');
-            }
-
-            $em = $this
-                    ->getDoctrine()
-                    ->getManager();
-
-            $gradeToEdit->setGradeName($gradeName);
-            $gradeToEdit->setValue($gradeValue);
-            $gradeToEdit->setNotes($gradeNotes);
-
-            $em->persist($gradeToEdit);
-            $em->flush();
-
-            return new JsonResponse(array(
-                'newName' => $gradeName,
-                'newValue' => $gradeValue,
-                'newNotes' => $gradeNotes,
-                'message' => 'Successfully edited grade!'
-            ));
-        }
-        return $this->redirectToRoute('teacher_home');
-    }
-
-    /**
-     * @Route("/teacher/student/grades/delete/{grade_id}", name="teacher_delete_grades")
-     * @param $grade_id
-     * @return JsonResponse|RedirectResponse
-     */
-    public function deleteStudentGrade($grade_id)
-    {
-        $gradeToDelete = $this
-                ->getDoctrine()
-                ->getRepository(PersonalGrades::class)
-                ->find($grade_id);
-
-        if (null !== $gradeToDelete) {
-            $em = $this
-                    ->getDoctrine()
-                    ->getManager();
-
-            $em->remove($gradeToDelete);
-            $em->flush();
-
-            return new JsonResponse(array('message' => 'Successfully deleted grade!'));
-        } else {
-            return $this->redirectToRoute('teacher_home');
-        }
-
     }
 }

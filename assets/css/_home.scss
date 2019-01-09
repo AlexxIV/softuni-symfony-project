@@ -1,0 +1,13 @@
+#content {
+  .unregistered-students {
+    a {
+      color: $baseColor;
+      font-size: 25px;
+      text-decoration: none !important;
+      transition: all 0.1s ease-in-out;
+      &:hover {
+        font-size: 26px;
+      }
+    }
+  }
+}

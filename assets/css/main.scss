@@ -2,14 +2,18 @@
 @import "~@fortawesome/fontawesome-free/css/all.css";
 
 @import "_helpers/variables";
+@import "_helpers/fonts";
 @import "_helpers/helpers";
 @import "_helpers/animations";
+
 
 @import "footer";
 @import "navbar";
 @import "tables";
 @import "custom-tables";
 @import "forms";
+@import "statistics";
+@import "home";
 
 html,
 body {
@@ -17,13 +21,18 @@ body {
   padding:0;
   height:100%;
   color: #fff;
+  font-family: $font-family-base;
 }
 
 body {
   background: url('images/background.jpg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 #main-wrapper {
   min-height: 100%;
   position: relative;
+  background: rgba(0, 0, 0, 0.2);
 }
+

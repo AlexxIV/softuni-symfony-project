@@ -1,0 +1,77 @@
+.grade-wrapper,
+.absence-wrapper {
+  border: 1px solid $baseColor;
+  border-radius: 50px;
+  position: relative;
+  min-height: 220px;
+  padding: 20px 10px;
+  background: rgba(255, 255, 255, 0.2);
+  transition: all .2s ease-in-out;
+  cursor: default !important;
+  .icon {
+    font-size: 110px;
+    line-height: 1;
+    color: $baseColor;
+    opacity: 0.8;
+  }
+
+  .grade-text {
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .number-wrapper {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    &.single-number {
+      > span {
+        padding: 20px 38.6px;
+      }
+    }
+    > span {
+      opacity: 0.9;
+      font-size: 40px;
+      font-weight: 700;
+      padding: 20px 10px;
+      border-radius: 50%;
+      border: 5px solid $baseColor;
+    }
+  }
+  &:hover {
+    transform: scale(1.1);
+    background: rgba(255, 255, 255, 0.1);
+    .icon {
+      opacity: 1;
+    }
+    .number-wrapper {
+      > span {
+        opacity: 1;
+      }
+    }
+  }
+  &.higher-grade {
+    border-color: $successBtnColor;
+    .icon {
+      color: $successBtnColor;
+    }
+    .number-wrapper {
+      > span {
+        border-color: $successBtnColor;
+      }
+    }
+  }
+
+  &.lower-grade {
+    border-color: $dangerBtnColor;
+    .icon {
+      color: $dangerBtnColor;
+    }
+    .number-wrapper {
+      > span {
+        border-color: $dangerBtnColor;
+      }
+    }
+  }
+}
+

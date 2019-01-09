@@ -1,8 +1,11 @@
 #footer {
-  @include media-breakpoint-up(lg) {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    background: #d3d3d3;
-  }
+  //@include media-breakpoint-up(lg) {
+  //  position: absolute;
+  //  bottom: 0;
+  //  width: 100%;
+  //  background: #d3d3d3;
+  //}
+  //position: static;
+  //bottom: 0;
+  //width: 100%;
 }

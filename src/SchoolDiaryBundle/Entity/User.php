@@ -132,6 +132,16 @@ class User implements UserInterface
     private $personalGrades;
 
     /**
+     * @var ArrayCollection
+     *
+     * @ORM\ManyToMany(targetEntity="Absences", inversedBy="student")
+     * @ORM\JoinTable(name="students_absences",
+     *     joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="absence_id", referencedColumnName="id", unique=true)})
+     */
+    private $absences;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="image", type="string", nullable=false)
@@ -143,6 +153,8 @@ class User implements UserInterface
         $this->roles = new ArrayCollection();
 
         $this->personalGrades = new ArrayCollection();
+
+        $this->absences = new ArrayCollection();
     }
 
     /**
@@ -400,6 +412,24 @@ class User implements UserInterface
     {
         $this->image = $image;
     }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getAbsences()
+    {
+        return $this->absences;
+    }
+
+    /**
+     * @param ArrayCollection $absences
+     */
+    public function setAbsences(ArrayCollection $absences): void
+    {
+        $this->absences = $absences;
+    }
+
+
 
 
 }
