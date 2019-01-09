@@ -10,4 +10,14 @@ namespace SchoolDiaryBundle\Repository;
  */
 class PersonalGradesRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getGradesForClass($classId)
+    {
+        $query = $this->createQueryBuilder('g');
+        $query
+            ->innerJoin('g.student', 's')
+            ->where('s.studentClass = :identifier')
+            ->setParameter('identifier', $classId);
+
+        return $query->getQuery()->getResult();
+    }
 }

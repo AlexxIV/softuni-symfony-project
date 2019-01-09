@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+{% block main %}
+    <div class="row grades mt-5">
+        <div class="col-12">
+            <div class="custom-table-temlate">
+                {% if absences is defined %}
+                    <div class="header">Absences</div>
+                    <table cellspacing="0" class="table-grades">
+                        <tr>
+                            <th>Course</th>
+                            <th>Date</th>
+                            <th>Notes</th>
+                            <th>Excused</th>
+                        </tr>
+                        {% for absence in absences %}
+                            <tr>
+                                <td>{{ absence.course }}</td>
+                                <td>{{ absence.date|date("d/m/Y") }}</td>
+                                <td>{{ absence.notes }}</td>
+                                <td>{% if absence.excused == 0 %}No{% else %}Yes{% endif %}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% else %}
+                    <div class="header">You are not registered yet.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

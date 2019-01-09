@@ -175,7 +175,7 @@ exports.default = (() => {
                 $(addFields).each(function (index, element) {
                     $(element)
                         .attr('contenteditable', 'false')
-                        .removeClass('editing');
+                        .removeClass('adding');
                 });
 
                 let tempBtns = gradeRow.find('td.text-center .temp-btn');
@@ -183,7 +183,7 @@ exports.default = (() => {
                               '<a class="btn-danger btn grade-delete ml-1" id="btn-delete-' + data.newId + '"href="/teacher/student/grades/delete/' + data.newId + '">Delete</a>';
                 tempBtns.remove();
 
-                gradeRow.parent().find('.empty-row').removeClass('d-none');
+                gradeRow.parent().find('.empty-row').removeClass('d-none').removeClass('empty-row');
                 // let addBtn = gradeRow.find('#grade-add');
                 // let newRow = gradeRow.clone();
                 // console.log(addBtn);

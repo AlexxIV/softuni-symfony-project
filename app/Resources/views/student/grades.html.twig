@@ -2,30 +2,27 @@
 {% block main %}
     <div class="row grades mt-5">
         <div class="col-12">
+            <div class="custom-table-temlate">
             {% if grades is defined %}
-            <div class="row mt-2">
-                <div class="col-3 text-center">Course*</div>
-                <div class="col-3 text-center">Grade*</div>
-                <div class="col-3 text-center">Notes</div>
-            </div>
-            {% for grade in grades %}
-                <div class="row m-3">
-                    <div class="col-3 grade-name">
-                        {{ grade.gradename }}
-                    </div>
-                    <div class="col-3 grade-value">
-                        {{ grade.value }}
-                    </div>
-                    <div class="col-3 grade-notes">
-                        {{ grade.notes }}
-                    </div>
-                </div>
-            {% endfor %}
+                <div class="header">Grades</div>
+                <table cellspacing="0" class="table-grades">
+                    <tr>
+                        <th>Course</th>
+                        <th>Grade</th>
+                        <th>Notes</th>
+                    </tr>
+                    {% for grade in grades %}
+                        <tr>
+                            <td>{{ grade.gradename }}</td>
+                            <td>{{ grade.value }}</td>
+                            <td>{{ grade.notes }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
             {% else %}
-                <div class="col-12 text-center">
-                    <h3 class="text-center">You are not registered yet.</h3>
-                </div>
+                <div class="header">You are not registered yet.</div>
             {% endif %}
+            </div>
         </div>
     </div>
 {% endblock %}

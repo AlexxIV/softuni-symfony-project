@@ -10,4 +10,57 @@ namespace SchoolDiaryBundle\Repository;
  */
 class UserRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getOnlyStudents()
+    {
+
+        $qbr = $this->getEntityManager()->getRepository(
+            'SchoolDiaryBundle:Role'
+        )->createQueryBuilder('r');
+
+        $newexpr = $qbr->expr()->neq('r.name', 'ROLE_USER');
+        dump($qbr->getQuery()->getSQL());
+
+        $qb = $this->createQueryBuilder('u');
+         $expr = $qb->expr()->notIn(
+             'ur.name',
+             $newexpr
+             );
+       $qb->innerJoin('u.roles', 'ur')
+            ->where($expr)
+            ->setParameter('identifier', 'ROLE_ADMIN');
+
+        echo $qb->getQuery()->getSQL();
+
+        return $qb->getQuery()->getResult();
+    }
+//    public function findByNot( array $criteria, array $orderBy = null, $limit = null, $offset = null )
+//    {
+//        $qb = $this->getEntityManager()->createQueryBuilder();
+//        $expr = $this->getEntityManager()->getExpressionBuilder();
+//
+//        $qb->select( 'entity' )
+//            ->from( $this->getEntityName(), 'entity' );
+//
+//        foreach ( $criteria as $field => $value ) {
+//
+//            $qb->andWhere( $expr->neq( 'entity.' . $field, $value ) );
+//        }
+//
+//        if ( $orderBy ) {
+//
+//            foreach ( $orderBy as $field => $order ) {
+//
+//                $qb->addOrderBy( 'entity.' . $field, $order );
+//            }
+//        }
+//
+//        if ( $limit )
+//            $qb->setMaxResults( $limit );
+//
+//        if ( $offset )
+//            $qb->setFirstResult( $offset );
+//
+//        return $qb->getQuery()
+//            ->getResult();
+//    }
 }
