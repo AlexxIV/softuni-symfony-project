@@ -46,16 +46,20 @@ class StudentController extends Controller
 
         $gradesSum = 0;
 
-        foreach ($allGrades as $grade) {
-            $gradesSum += $grade->getValue();
+        if (count($allGrades) > 0) {
+            foreach ($allGrades as $grade) {
+                $gradesSum += $grade->getValue();
+            }
+            $allAverageGrade = $gradesSum / count($allGrades);
+        } else {
+            $allAverageGrade = 0;
         }
-        $allAverageGrade = $gradesSum / count($allGrades);
-
 
         $allUsers = $this
             ->getDoctrine()
             ->getRepository(User::class)
             ->findBy(['studentClass' => $user->getStudentClass()]);
+
 
         $absencesByUser = [];
         foreach ($allUsers as $user) {
@@ -64,6 +68,7 @@ class StudentController extends Controller
             }
             $absencesByUser[] = count($user->getAbsences());
         }
+
 
         return $this->render('student/index.html.twig', array(
             'allAverageGrade' => $allAverageGrade,

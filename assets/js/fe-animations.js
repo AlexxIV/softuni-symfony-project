@@ -1,13 +1,32 @@
 exports.default = (() => {
     $('#btn-show-grades').on('click', function () {
         let content = $('.table-grades');
+        let header = $('#grades-header');
         let arrow = $(this).find('.fa-arrow-right');
 
         if (!content.hasClass("d-table")) {
             content.toggleClass("d-none d-table");
+            header.toggleClass("d-none d-block");
             arrow.addClass("rotated");
         } else if (content.hasClass("d-table")) {
             content.toggleClass("d-table d-none");
+            header.toggleClass("d-block d-none");
+            arrow.removeClass("rotated");
+        }
+    });
+
+    $('#btn-show-absences').on('click', function () {
+        let content = $('.table-absences');
+        let header = $('#absences-header');
+        let arrow = $(this).find('.fa-arrow-right');
+
+        if (!content.hasClass("d-table")) {
+            content.toggleClass("d-none d-table");
+            header.toggleClass("d-none d-block");
+            arrow.addClass("rotated");
+        } else if (content.hasClass("d-table")) {
+            content.toggleClass("d-table d-none");
+            header.toggleClass("d-block d-none");
             arrow.removeClass("rotated");
         }
     });

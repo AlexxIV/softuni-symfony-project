@@ -32,7 +32,7 @@ exports.default = (() => {
         let gradeRow = $(e.target).parent().parent();
         gradeRow.after(backupRow.hide());
         let newBtns = '<a class="btn-success btn btn-edit-grade temp-btn" href="' + editUrl + '" >Save</a>' +
-                      '<button class="btn-danger btn grade-edit-cancel ml-1 temp-btn">Cancel</button>';
+            '<button class="btn-danger btn grade-edit-cancel ml-1 temp-btn">Cancel</button>';
         let editFields = gradeRow
             .find('td:not(.text-center)')
             .each(function (index, element) {
@@ -137,7 +137,7 @@ exports.default = (() => {
         currentRow.parent().append(emptyRow);
 
         let newBtns = '<a class="btn-success btn btn-add-grade temp-btn" href="' + addUrl + '" >Save</a>' +
-                      '<button class="btn-danger btn grade-edit-cancel cancel-adding ml-1 temp-btn">Cancel</button>';
+            '<button class="btn-danger btn grade-edit-cancel cancel-adding ml-1 temp-btn">Cancel</button>';
 
         let addFields = currentRow
             .find('td:not(.text-center)')
@@ -180,8 +180,150 @@ exports.default = (() => {
 
                 let tempBtns = gradeRow.find('td.text-center .temp-btn');
                 let newBtns = '<a class="btn-success btn grade-edit" id="btn-edit-' + data.newId + '" href="/teacher/student/grades/edit/' + data.newId + '" >Edit</a>' +
-                              '<a class="btn-danger btn grade-delete ml-1" id="btn-delete-' + data.newId + '"href="/teacher/student/grades/delete/' + data.newId + '">Delete</a>';
+                    '<a class="btn-danger btn grade-delete ml-1" id="btn-delete-' + data.newId + '"href="/teacher/student/grades/delete/' + data.newId + '">Delete</a>';
                 tempBtns.remove();
+
+                gradeRow.parent().find('.empty-row').removeClass('d-none').removeClass('empty-row');
+                // let addBtn = gradeRow.find('#grade-add');
+                // let newRow = gradeRow.clone();
+                // console.log(addBtn);
+                // console.log(newRow);
+                // console.log(emptyGradeRow);
+                //let newRow = '<tr><td></td><td></td><td></td><td class="text-center"></td></tr>';
+                // gradeRow.parent().append(newRow);
+                gradeRow.find('td.text-center').append(newBtns);
+
+                $('#main').prepend("<div class='ajax-message text-center alert alert-success'>" + data.message + "</div>");
+                setTimeout(function () {
+                    $('.ajax-message').fadeOut().remove();
+                }, 4000);
+
+            },
+            error: function (data) {
+                form.remove();
+                $(addFields[1]).focus();
+                let errorMessage = (data.responseJSON.message);
+                $('#main').prepend("<div class='ajax-message text-center alert alert-danger'>" + errorMessage + "</div>");
+                setTimeout(function () {
+                    $('.ajax-message').fadeOut().remove();
+                }, 5000);
+            }
+        })
+    });
+
+    // Excuse absence
+    $('#main-wrapper').on('click', '.btn-excuse-absence', function (e) {
+        e.preventDefault();
+
+        let url = $(this).attr('href');
+        let button = $(this);
+        let boolField = $(this).parent().prev();
+
+        $.ajax({
+            type: "GET",
+            url: url,
+            success: function (data) {
+                boolField.text('Yes');
+                button.remove();
+
+                $('#main').prepend("<div class='ajax-message text-center alert alert-success'>" + data.message + "</div>");
+                setTimeout(function () {
+                    $('.ajax-message').fadeOut().remove();
+                }, 4000);
+            },
+            error: function (data) {
+                let errorMessage = (data.responseJSON.message);
+                $('#main').prepend("<div class='ajax-message text-center alert alert-danger'>" + errorMessage + "</div>");
+                setTimeout(function () {
+                    $('.ajax-message').fadeOut().remove();
+                }, 5000);
+            }
+        });
+    });
+
+    // Add absence
+    $('#main-wrapper').on('click', 'a#absence-add-new', function (e) {
+        e.preventDefault();
+        let addUrl = $(e.target).attr('href');
+        let currentRow = $(e.target).parent().parent();
+        if (currentRow.parent().find('.empty-row').length > 0) {
+            currentRow.parent().find('.empty-row').remove();
+        }
+        let emptyRow = currentRow.clone();
+        emptyRow.addClass('empty-row d-none');
+        currentRow.parent().append(emptyRow);
+
+        let newBtns = '<a class="btn-success btn btn-add-absence-submit temp-btn" href="' + addUrl + '" >Save</a>' +
+            '<button class="btn-danger btn grade-edit-cancel cancel-adding ml-1 temp-btn">Cancel</button>';
+
+        let addFields = currentRow
+            .find('td:not(.text-center)')
+            .each(function (index, element) {
+                if (index === 1 || index === 3) {
+                    return;
+                }
+                $(element)
+                    .attr('contenteditable', 'true')
+                    .addClass('adding');
+            });
+
+        function todayDate() {
+            let today = new Date();
+
+            let dd = today.getDate();
+
+            let mm = today.getMonth() + 1;
+            let yyyy = today.getFullYear();
+            if (dd < 10) {
+                dd = '0' + dd;
+            }
+
+            if (mm < 10) {
+                mm = '0' + mm;
+            }
+
+            today = dd + '/' + mm + '/' + yyyy;
+
+            return today;
+        }
+
+        $(addFields[1]).text(todayDate());
+        $(addFields[3]).text('No');
+
+
+        addFields[0].focus();
+
+        let actionBtns = currentRow.find('td.text-center');
+        actionBtns.children().hide();
+        actionBtns.append(newBtns);
+    });
+
+    $('#main-wrapper').on('click', '.btn-add-absence-submit', function (e) {
+        e.preventDefault();
+        let addUrl = $(e.target).attr('href');
+        let gradeRow = $(e.target).parent().parent();
+        let addFields = gradeRow.find('td:not(.text-center)');
+        let form = createAbsenceForm([$(addFields[0]).text(), $(addFields[2]).text()]);
+
+        $.ajax({
+            type: "POST",
+            url: addUrl,
+            data: $(form).serialize(),
+            success: function (data) {
+                form.remove();
+                $(addFields[0]).text(data.newCourse).attr('contenteditable', 'false').removeClass('editing');
+                $(addFields[2]).text(data.newNotes).attr('contenteditable', 'false').removeClass('editing');
+
+                $(addFields).each(function (index, element) {
+                    $(element)
+                        .attr('contenteditable', 'false')
+                        .removeClass('adding');
+                });
+
+                let tempBtns = gradeRow.find('td.text-center .temp-btn');
+                let newBtns = '<a class="btn-success btn btn-excuse-absence" id="' + data.newId + '" href="/teacher/student/absence/excuse/' + data.newId + '" >Excuse</a>';
+                tempBtns.remove();
+
 
                 gradeRow.parent().find('.empty-row').removeClass('d-none').removeClass('empty-row');
                 // let addBtn = gradeRow.find('#grade-add');
@@ -232,7 +374,24 @@ exports.default = (() => {
         return form;
     }
 
+    function createAbsenceForm([course, notes]) {
+        let form = document.createElement("form");
+        let element1 = document.createElement("input");
+        element1.name = "absenceCourse";
+        element1.value = course;
+        element1.type = 'text';
+        form.appendChild(element1);
+        let element2 = document.createElement("input");
+        element2.name = "absenceNotes";
+        element2.value = notes;
+        element2.type = 'text';
+        form.appendChild(element2);
+
+        return form;
+    }
+
 
 })();
+
 
 

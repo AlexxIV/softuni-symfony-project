@@ -257,10 +257,12 @@ class TeacherController extends Controller
                 ->find($id);
 
         $studentGrades = $student->getPersonalGrades();
+        $studentAbsences = $student->getAbsences();
 
         return $this->render('teacher/details.html.twig', array(
             'student' => $student,
-            'grades' => $studentGrades
+            'grades' => $studentGrades,
+            'absences' => $studentAbsences
         ));
     }
 

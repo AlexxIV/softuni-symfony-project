@@ -56,6 +56,11 @@ class Absences
      */
     private $student;
 
+    public function __construct()
+    {
+        $this->setDate(new \DateTime());
+        $this->setExcused(false);
+    }
 
     /**
      * Get id
