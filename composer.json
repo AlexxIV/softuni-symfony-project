@@ -2,6 +2,7 @@
     "name": "alex1/softuni-symfony-project",
     "license": "proprietary",
     "type": "project",
+    "description": "Simple school-diary app make for a SoftUni Project",
     "autoload": {
         "psr-4": {
             "SchoolDiaryBundle\\": "src/SchoolDiaryBundle"
