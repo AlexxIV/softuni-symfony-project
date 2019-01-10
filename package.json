@@ -1,5 +1,5 @@
 {
-  "devDependencies": {
+  "dependencies": {
     "@fortawesome/fontawesome-free": "^5.6.3",
     "@symfony/webpack-encore": "^0.22.2",
     "bootstrap": "^4.2.1",
@@ -10,6 +10,6 @@
     "sass-loader": "7.0.1"
   },
   "scripts": {
-    "build": "yarn encore production"
+    "heroku-postbuild": "yarn encore production"
   }
 }
