@@ -55,20 +55,23 @@ class StudentController extends Controller
             $allAverageGrade = 0;
         }
 
-        $allUsers = $this
-            ->getDoctrine()
-            ->getRepository(User::class)
-            ->findBy(['studentClass' => $user->getStudentClass()]);
+        if (null !== $user->getStudentClass()) {
+            $allUsers = $this
+                ->getDoctrine()
+                ->getRepository(User::class)
+                ->findBy(['studentClass' => $user->getStudentClass()]);
 
 
-        $absencesByUser = [];
-        foreach ($allUsers as $user) {
-            if (in_array('ROLE_TEACHER', $user->getRoles())) {
-                continue;
+            $absencesByUser = [];
+            foreach ($allUsers as $user) {
+                if (in_array('ROLE_TEACHER', $user->getRoles())) {
+                    continue;
+                }
+                $absencesByUser[] = count($user->getAbsences());
             }
-            $absencesByUser[] = count($user->getAbsences());
+        } else {
+            $absencesByUser = [];
         }
-
 
         return $this->render('student/index.html.twig', array(
             'allAverageGrade' => $allAverageGrade,
