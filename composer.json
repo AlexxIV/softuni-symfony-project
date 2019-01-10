@@ -52,6 +52,9 @@
         "post-update-cmd": [
             "@symfony-scripts"
         ]
+//        "compile": [
+//            "yarn encore production"
+//        ]
     },
     "config": {
         "sort-packages": true

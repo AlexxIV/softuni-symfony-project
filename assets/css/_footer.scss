@@ -1,17 +1,17 @@
 #footer {
-  @include media-breakpoint-up(lg) {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-  }
-  .git-hub-link {
-    > img {
-      transition: all 0.2s ease-in-out;
-    }
-    &:hover {
-      > img {
-        transform: scale(1.2);
-      }
-    }
-  }
+  //@include media-breakpoint-up(lg) {
+  //  //position: absolute;
+  //  //bottom: 0;
+  //  //width: 100%;
+  //}
+  //.git-hub-link {
+  //  > img {
+  //    transition: all 0.2s ease-in-out;
+  //  }
+  //  &:hover {
+  //    > img {
+  //      transform: scale(1.2);
+  //    }
+  //  }
+  //}
 }
