@@ -85,14 +85,14 @@ class UserController extends Controller
 
             $isTeacher = $form->getData()->getIsTeacher();
             if ($isTeacher) {
-                $roles = $this
+                $role = $this
                     ->getDoctrine()
                     ->getRepository(Role::class)
-                    ->findBy(array('name' => array('ROLE_TEACHER', 'ROLE_USER')));
-
-                foreach ($roles as $role) {
-                    $user->addRole($role);
-                }
+                    ->findOneBy(array('name' => 'ROLE_TEACHER'));
+//
+//                foreach ($roles as $role) {
+//                    $user->addRole($role);
+//                }
 
             } else {
                 $role = $this
@@ -100,7 +100,7 @@ class UserController extends Controller
                     ->getRepository(Role::class)
                     ->findOneBy(['name' => 'ROLE_USER']);
 
-                $user->addRole($role);
+
 
 //                $studentClass = $this->getDoctrine()
 //                                    ->getRepository(SchoolClass::class)
@@ -124,7 +124,7 @@ class UserController extends Controller
 //                    $user->setStudentClass($studentClass);
 //                }
             }
-
+            $user->addRole($role);
 
             $user->setPassword($password);
 
