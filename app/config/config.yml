@@ -33,8 +33,10 @@ framework:
 
 # Twig Configuration
 twig:
-    debug: '%kernel.debug%'
-    strict_variables: '%kernel.debug%'
+    # '%kernel.debug%'
+    debug: true
+    # '%kernel.debug%'
+    strict_variables: true
     form_themes: ['bootstrap_4_layout.html.twig']
 
 # Doctrine Configuration
