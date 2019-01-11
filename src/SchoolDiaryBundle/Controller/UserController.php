@@ -90,6 +90,7 @@ class UserController extends Controller
                     ->getRepository(Role::class)
                     ->findOneBy(array('name' => 'ROLE_TEACHER'));
 //
+                $user->setIsTeacher(true);
 //                foreach ($roles as $role) {
 //                    $user->addRole($role);
 //                }

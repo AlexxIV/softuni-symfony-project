@@ -94,7 +94,8 @@ class User implements UserInterface
     /**
      * @var SchoolClass
      *
-     * @ORM\OneToOne(targetEntity="SchoolClass", mappedBy="teacher")
+     * @ORM\OneToOne(targetEntity="SchoolClass", inversedBy="teacher")
+     * @ORM\JoinColumn(name="teacher_class_id", referencedColumnName="id", nullable=true)
      */
     private $teacherClass;
 

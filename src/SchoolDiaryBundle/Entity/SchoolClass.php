@@ -4,7 +4,9 @@ namespace SchoolDiaryBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\OneToMany;
+use Doctrine\ORM\Mapping\OneToOne;
 
 /**
  * SchoolClass
@@ -32,9 +34,8 @@ class SchoolClass
     /**
      * @var User
      *
-     * @ORM\OneToOne(targetEntity="User", inversedBy="teacherClass")
-     * @ORM\JoinColumn(name="teacher_id", referencedColumnName="id")
-     *
+     * @OneToOne(targetEntity="User", mappedBy="teacherClass")
+     * @JoinColumn(name="teacher", referencedColumnName="id")
      */
     private $teacher;
 
@@ -42,14 +43,15 @@ class SchoolClass
      * @var ArrayCollection
      *
      * @OneToMany(targetEntity="User", mappedBy="studentClass")
+     *
      */
     private $students;
 
     /**
      * @var Schedule
      *
-     * @ORM\OneToOne(targetEntity="Schedule", inversedBy="schoolClass")
-     * @ORM\JoinColumn(name="schedule_id", referencedColumnName="id")
+     * @OneToOne(targetEntity="Schedule", inversedBy="schoolClass")
+     * @JoinColumn(name="schedule_id", referencedColumnName="id")
      *
      */
     private $schedule;

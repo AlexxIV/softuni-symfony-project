@@ -131,18 +131,13 @@ class TeacherController extends Controller
          *
          */
 
-        $userId = $this->getUser()->getId();
+        $user = $this->getUser();
         $schoolClass = $this
                 ->getDoctrine()
                 ->getRepository(SchoolClass::class)
                 ->find($id);
 
         if (null !== $schoolClass) {
-
-            $user = $this
-                ->getDoctrine()
-                ->getRepository(User::class)
-                ->find($userId);
 
             if (null === $schoolClass->getTeacher() && null === $user->getTeacherClass()) {
                    $em = $this->getDoctrine()->getManager();
