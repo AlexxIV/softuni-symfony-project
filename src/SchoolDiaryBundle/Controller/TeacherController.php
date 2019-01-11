@@ -131,11 +131,17 @@ class TeacherController extends Controller
          *
          */
 
-        $user = $this->getUser();
+        $user = $this
+                ->getDoctrine()
+                ->getRepository(User::class)
+                ->find($this->getUser()->getId());
+
         $schoolClass = $this
             ->getDoctrine()
             ->getRepository(SchoolClass::class)
             ->find($id);
+
+
 
         if (null !== $schoolClass && null !== $user) {
 
@@ -146,6 +152,8 @@ class TeacherController extends Controller
                 $em = $this->getDoctrine()->getManager();
 
                 $schoolClass->setTeacher($user);
+                $user->setTeacherClass($schoolClass);
+                
                 $em->flush();
 
                 $this->addFlash('success', 'Successfully selected class!');
