@@ -139,7 +139,6 @@ class TeacherController extends Controller
 
         if (null !== $schoolClass) {
             if (null === $schoolClass->getTeacher() && null === $user->getTeacherClass()) {
-               try {
                    $em = $this->getDoctrine()->getManager();
 
                    $schoolClass->setTeacher($user);
@@ -168,10 +167,6 @@ class TeacherController extends Controller
 
                    $this->addFlash('success', 'Successfully selected class!');
                    return $this->redirectToRoute('teacher_home');
-               } catch (\Exception $e) {
-                   $this->addFlash('danger', $e);
-                   return $this->redirectToRoute('teacher_home');
-               }
             }
         }
 
