@@ -30,16 +30,16 @@ class TeacherController extends Controller
          */
         $user = $this->getUser();
 
-       if (null === $user->getTeacherClass()) {
-           $schoolClassesWithoutTeacher = $this
-               ->getDoctrine()
-               ->getRepository(SchoolClass::class)
-               ->findBy(['teacher' => null]);
+        if (null === $user->getTeacherClass()) {
+            $schoolClassesWithoutTeacher = $this
+                ->getDoctrine()
+                ->getRepository(SchoolClass::class)
+                ->findBy(['teacher' => null]);
 
-           return $this->render('teacher/index.html.twig', array(
-               'emptyClasses' => $schoolClassesWithoutTeacher,
-           ));
-       }
+            return $this->render('teacher/index.html.twig', array(
+                'emptyClasses' => $schoolClassesWithoutTeacher,
+            ));
+        }
 
         /**
          * @var SchoolClass $teacherClass
@@ -50,15 +50,15 @@ class TeacherController extends Controller
             ->find($user->getTeacherClass());
 
         $unsubscribedStudents = $this
-                            ->getDoctrine()
-                            ->getRepository(User::class)
-                            ->findBy(['studentClass' => null, 'grade' => $teacherClass->getName()]);
+            ->getDoctrine()
+            ->getRepository(User::class)
+            ->findBy(['studentClass' => null, 'grade' => $teacherClass->getName()]);
 
         // School Grades
         $allGrades = $this
-                ->getDoctrine()
-                ->getRepository(PersonalGrades::class)
-                ->findAll();
+            ->getDoctrine()
+            ->getRepository(PersonalGrades::class)
+            ->findAll();
 
         $allGradesAverage = [];
         foreach ($allGrades as $grade) {
@@ -67,9 +67,9 @@ class TeacherController extends Controller
 
         // School Absences
         $allUsers = $this
-                    ->getDoctrine()
-                    ->getRepository(User::class)
-                    ->findAll();
+            ->getDoctrine()
+            ->getRepository(User::class)
+            ->findAll();
 
         $absencesByUser = [];
         foreach ($allUsers as $user) {
@@ -133,41 +133,40 @@ class TeacherController extends Controller
 
         $user = $this->getUser();
         $schoolClass = $this
-                ->getDoctrine()
-                ->getRepository(SchoolClass::class)
-                ->find($id);
+            ->getDoctrine()
+            ->getRepository(SchoolClass::class)
+            ->find($id);
 
         if (null !== $schoolClass) {
 
-            if (null === $schoolClass->getTeacher() && null === $user->getTeacherClass()) {
-                   $em = $this->getDoctrine()->getManager();
+            if (
+                null === $schoolClass->getTeacher() &&
+                null === $user->getTeacherClass()
+            ) {
+                $em = $this->getDoctrine()->getManager();
 
-                   $schoolClass->setTeacher($user);
-                   $user->setTeacherClass($schoolClass);
+                $schoolClass->setTeacher($user);
+                if (null === $schoolClass->getSchedule()) {
 
-                   if (null === $schoolClass->getSchedule()) {
+                    $schedule = new Schedule();
 
-                       $schedule = new Schedule();
+                    foreach (self::DAYS as $dayName) {
+                        /** @var Days $day */
+                        $day = new Days();
+                        $day->setDay($dayName);
+                        $em->persist($day);
+                        $schedule->addDay($day);
+                    }
+                    $em->persist($schedule);
+                    $schoolClass->setSchedule($schedule);
 
-                       foreach (self::DAYS as $dayName) {
-                           /** @var Days $day */
-                           $day = new Days();
-                           $day->setDay($dayName);
-                           $em->persist($day);
-                           $schedule->addDay($day);
-                       }
-                       $em->persist($schedule);
-                       $schoolClass->setSchedule($schedule);
+                }
+                $user->setTeacherClass($schoolClass);
 
-                   }
+                $em->flush();
 
-                   $em->persist($user);
-                   $em->persist($schoolClass);
-
-                   $em->flush();
-
-                   $this->addFlash('success', 'Successfully selected class!');
-                   return $this->redirectToRoute('teacher_home');
+                $this->addFlash('success', 'Successfully selected class!');
+                return $this->redirectToRoute('teacher_home');
             }
         }
 
@@ -183,9 +182,9 @@ class TeacherController extends Controller
     public function studentRegisterAction($id)
     {
         $student = $this
-                ->getDoctrine()
-                ->getRepository(User::class)
-                ->find($id);
+            ->getDoctrine()
+            ->getRepository(User::class)
+            ->find($id);
 
         if (null !== $student->getStudentClass()) {
             $this->addFlash('warning', 'The students is already registered!');
@@ -193,13 +192,13 @@ class TeacherController extends Controller
         }
 
         $currentClass = $this
-                    ->getDoctrine()
-                    ->getRepository(SchoolClass::class)
-                    ->findOneBy(['teacher' => $this->getUser()->getId()]);
+            ->getDoctrine()
+            ->getRepository(SchoolClass::class)
+            ->findOneBy(['teacher' => $this->getUser()->getId()]);
 
         $em = $this
-                ->getDoctrine()
-                ->getManager();
+            ->getDoctrine()
+            ->getManager();
 
         $student->setStudentClass($currentClass);
 
@@ -246,11 +245,12 @@ class TeacherController extends Controller
      * @param $id
      * @return Response
      */
-    public function studentDetailsAction($id) {
+    public function studentDetailsAction($id)
+    {
         $student = $this
-                ->getDoctrine()
-                ->getRepository(User::class)
-                ->find($id);
+            ->getDoctrine()
+            ->getRepository(User::class)
+            ->find($id);
 
         $studentGrades = $student->getPersonalGrades();
         $studentAbsences = $student->getAbsences();
@@ -290,7 +290,6 @@ class TeacherController extends Controller
             ->getDoctrine()
             ->getRepository(User::class)
             ->findBy(['studentClass' => null, 'grade' => $teacherClass->getName()]);
-
 
 
         return $this->render('teacher/students-list.html.twig', array(
