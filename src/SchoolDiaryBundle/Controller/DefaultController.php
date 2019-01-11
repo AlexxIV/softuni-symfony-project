@@ -30,7 +30,7 @@ class DefaultController extends Controller
     public function indexAction(Request $request)
     {
         echo '<pre>';
-       var_dump($this->getUser());
+       dump($this->getUser());
 
 //        if ($this->auth_checker->isGranted('ROLE_ADMIN')) {
 //            $this->addFlash('success','Successfully logged in as admin!');
