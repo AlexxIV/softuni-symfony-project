@@ -29,6 +29,7 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
+       dump($this->getUser());
 
 //        if ($this->auth_checker->isGranted('ROLE_ADMIN')) {
 //            $this->addFlash('success','Successfully logged in as admin!');
@@ -45,24 +46,26 @@ class DefaultController extends Controller
 //            $this->redirectToRoute('student_home');
 //        }
 //
+//
+//        if ($this->auth_checker->isGranted('ROLE_ADMIN')) {
+//            $this->addFlash('success','Successfully logged in as admin!');
+//            return $this->redirectToRoute('admin_home');
+//        }
+//
+//        else if($this->auth_checker->isGranted('ROLE_TEACHER')) {
+//            $this->addFlash('success', 'Successfully logged in as teacher!');
+//            return $this->redirectToRoute('teacher_home');
+//        }
+//
+//        else if($this->auth_checker->isGranted('ROLE_USER')) {
+//            $this->addFlash('success', 'Successfully logged in as student!');
+//            return $this->redirectToRoute('student_home');
+//        }
+//        else {
+//            $this->addFlash('error', 'Something went wrong try again');
+//            return $this->redirectToRoute('security_login');
+//        }
 
-        if ($this->auth_checker->isGranted('ROLE_ADMIN')) {
-            $this->addFlash('success','Successfully logged in as admin!');
-            return $this->redirectToRoute('admin_home');
-        }
-
-        else if($this->auth_checker->isGranted('ROLE_TEACHER')) {
-            $this->addFlash('success', 'Successfully logged in as teacher!');
-            return $this->redirectToRoute('teacher_home');
-        }
-
-        else if($this->auth_checker->isGranted('ROLE_USER')) {
-            $this->addFlash('success', 'Successfully logged in as student!');
-            return $this->redirectToRoute('student_home');
-        }
-        else {
-            $this->addFlash('error', 'Something went wrong try again');
-            return $this->redirectToRoute('security_login');
-        }
+        return $this->render(':common:index.html.twig');
     }
 }
