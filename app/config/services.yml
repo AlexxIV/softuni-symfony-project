@@ -37,5 +37,5 @@ services:
     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
         public: flase
         arguments:
-            - 'mysql:host=%database_host%;port=%database_port%;dbname=%database_name%'
+            - 'mysql:host=%database_host%;port=a999f698;dbname=%database_name%'
             - { db_username: '%database_user%', db_password: '%database_password%' }
