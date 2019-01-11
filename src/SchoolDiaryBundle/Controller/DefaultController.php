@@ -30,8 +30,8 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $test = 'test';
-        return new Response(VarDumper::dump($this->getUser()));
+        if (null !== $this->getUser()) {
+            return new Response(VarDumper::dump($this->getUser()));
 //        if ($this->auth_checker->isGranted('ROLE_ADMIN')) {
 //            $this->addFlash('success','Successfully logged in as admin!');
 //            $this->redirectToRoute('admin_home');
@@ -67,6 +67,7 @@ class DefaultController extends Controller
 //            return $this->redirectToRoute('security_login');
 //        }
 
+        }
         return $this->render('common/index.html.twig');
     }
 }

@@ -137,7 +137,7 @@ class TeacherController extends Controller
             ->getRepository(SchoolClass::class)
             ->find($id);
 
-        if (null !== $schoolClass) {
+        if (null !== $schoolClass && null !== $user) {
 
             if (
                 null === $schoolClass->getTeacher() &&
