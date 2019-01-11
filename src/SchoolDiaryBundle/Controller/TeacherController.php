@@ -146,23 +146,6 @@ class TeacherController extends Controller
                 $em = $this->getDoctrine()->getManager();
 
                 $schoolClass->setTeacher($user);
-                if (null === $schoolClass->getSchedule()) {
-
-                    $schedule = new Schedule();
-
-                    foreach (self::DAYS as $dayName) {
-                        /** @var Days $day */
-                        $day = new Days();
-                        $day->setDay($dayName);
-                        $em->persist($day);
-                        $schedule->addDay($day);
-                    }
-                    $em->persist($schedule);
-                    $schoolClass->setSchedule($schedule);
-
-                }
-                $user->setTeacherClass($schoolClass);
-
                 $em->flush();
 
                 $this->addFlash('success', 'Successfully selected class!');
