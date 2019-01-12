@@ -38,9 +38,9 @@ class UserLogin extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'csrf_field_name' => '_csrf_token',
-            'csrf_token_id' => 'authenticate',
-        ));
+//        $resolver->setDefaults(array(
+//            'csrf_field_name' => '_csrf_token',
+//            'csrf_token_id' => 'authenticate',
+//        ));
     }
 }
