@@ -143,7 +143,9 @@ class TeacherController extends Controller
 
                     $user->setTeacherClass($schoolClass);
                     $schoolClass->setIsLocked(true);
+                    $schoolClass->addTeacher($user);
 
+                    $em->persist($schoolClass);
                     $em->persist($user);
                     $em->flush();
 

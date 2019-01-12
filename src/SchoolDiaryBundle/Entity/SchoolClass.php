@@ -48,9 +48,8 @@ class SchoolClass
     private $classLetterIdentifier;
 
     /**
-     * @var User
      *
-     * @OneToOne(targetEntity="User", mappedBy="teacherClass")
+     * @OneToMany(targetEntity="User", mappedBy="teacherClass")
      */
     private $teacher;
 
@@ -81,6 +80,8 @@ class SchoolClass
     public function __construct()
     {
         $this->students = new ArrayCollection();
+
+        $this->teacher = new ArrayCollection();
     }
 
     /**
@@ -125,27 +126,24 @@ class SchoolClass
         $this->classLetterIdentifier = $classLetterIdentifier;
     }
 
-
     /**
-     * @return User
+     * @return ArrayCollection
      */
-    public function getTeacher(): ?User
+    public function getTeacher(): ArrayCollection
     {
         return $this->teacher;
     }
 
-    /**
-     * @param User $teacher
-     */
-    public function setTeacher(User $teacher): void
+    public function addTeacher(User $teacher)
     {
-        $this->teacher = $teacher;
+        $this->teacher[] = $teacher;
+        return $this;
     }
 
     /**
      * @return ArrayCollection
      */
-    public function getStudents(): ArrayCollection
+    public function getStudents(): ?ArrayCollection
     {
         return $this->students;
     }
