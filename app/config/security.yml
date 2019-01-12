@@ -22,8 +22,8 @@ security:
                 login_path: security_login
 
                 always_use_default_target_path: true
-
-                csrf_token_generator: security.csrf.token_manager
+#
+#                csrf_token_generator: security.csrf.token_manager
 
             logout:
                 target: homepage
