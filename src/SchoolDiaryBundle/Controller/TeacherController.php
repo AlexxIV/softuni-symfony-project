@@ -36,7 +36,7 @@ class TeacherController extends Controller
             $emptyClasses = $this
                     ->getDoctrine()
                     ->getRepository(SchoolClass::class)
-                    ->findBy(['teacher' => null]);
+                    ->findBy(['isLocked' => false]);
 
             return $this->render('teacher/index.html.twig', array(
                 'emptyClasses' => $emptyClasses,
@@ -133,33 +133,27 @@ class TeacherController extends Controller
             ->getRepository(SchoolClass::class)
             ->find($id);
 
-        if (null !== $schoolClass) {
+        if (null !== $schoolClass && !$schoolClass->isLocked()) {
 
-            $schoolClassTeacher = $schoolClass->getTeacher();
-
-            if (null === $schoolClassTeacher) {
+                /** @var User $user */
                 $user = $this->getUser();
 
                 if (null !== $user) {
-                    $schoolClass->setTeacher($user);
+                    $em = $this->getDoctrine()->getManager();
 
-                    $em = $this
-                            ->getDoctrine()
-                            ->getManager();
+                    $user->setTeacherClass($schoolClass);
+                    $schoolClass->setIsLocked(true);
 
-                    $em->persist($schoolClass);
+                    $em->persist($user);
                     $em->flush();
 
                     $this->addFlash('success', 'Successfully selected class!');
+                    return $this->redirectToRoute('teacher_home');
                 }
-            }
-            $this->addFlash('danger', 'The class already has a teacher!');
+
         }
 
         $this->addFlash('danger', 'Class does not exist!');
-
-
-
         return $this->redirectToRoute('teacher_home');
     }
 

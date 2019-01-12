@@ -50,8 +50,7 @@ class SchoolClass
     /**
      * @var User
      *
-     * @OneToOne(targetEntity="User", inversedBy="teacherClass")
-     * @JoinColumn(name="teacher_id", referencedColumnName="id")
+     * @OneToOne(targetEntity="User", mappedBy="teacherClass")
      */
     private $teacher;
 
@@ -62,6 +61,13 @@ class SchoolClass
      *
      */
     private $students;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_locked", type="boolean")
+     */
+    private $isLocked;
 
 //    /**
 //     * @var Schedule
@@ -150,10 +156,28 @@ class SchoolClass
         return $this;
     }
 
+    /**
+     * @return bool
+     */
+    public function isLocked(): bool
+    {
+        return $this->isLocked;
+    }
+
+    /**
+     * @param bool $isLocked
+     */
+    public function setIsLocked(bool $isLocked): void
+    {
+        $this->isLocked = $isLocked;
+    }
+
     public function getGradeForSelect()
     {
         return $this->getClassNumberIdentifier() . $this->getClassLetterIdentifier();
     }
+
+
 
 //    /**
 //     * @return Schedule
