@@ -3,8 +3,11 @@
 namespace SchoolDiaryBundle\Form;
 
 
+use SchoolDiaryBundle\Entity\SchoolClass;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -33,12 +36,16 @@ class UserType extends AbstractType
             ->add('firstName', TextType::class)
             ->add('lastName', TextType::class)
             ->add('personalID', TextType::class, array('label' => 'Personal ID'))
-            ->add('grade', TextType::class, array(
-                'label' => 'Grade',
+            ->add('studentClass', EntityType::class, array(
+                'label' => 'Please select your grade',
+                'class' => SchoolClass::class,
+                'choice_label' => 'gradeForSelect',
                 'required' => false,
+                'placeholder' => false
             ))
-            ->add('isTeacher', HiddenType::class, array(
+            ->add('registerTeacher', HiddenType::class, array(
                 'required' => false,
+                'mapped' => false
             ))
             ->add('image', FileType::class, array(
                 'attr' => array('class' => 'custom-file-upload-btn'),

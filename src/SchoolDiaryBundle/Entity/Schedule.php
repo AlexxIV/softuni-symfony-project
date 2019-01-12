@@ -24,12 +24,12 @@ class Schedule
      */
     private $id;
 
-    /**
-     * @var SchoolClass
-     *
-     * @OneToOne(targetEntity="SchoolClass", mappedBy="schedule")
-     */
-    private $schoolClass;
+//    /**
+//     * @var SchoolClass
+//     *
+//     * @OneToOne(targetEntity="SchoolClass", mappedBy="schedule")
+//     */
+//    private $schoolClass;
 
     /**
      * @var ArrayCollection

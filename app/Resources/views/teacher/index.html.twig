@@ -1,77 +1,9 @@
 {% extends 'base.html.twig' %}
 {% block main %}
     {% if emptyClasses is defined and emptyClasses|length > 0 %}
-        <h2 class="text-center m-5">You do not have a teaching class for the moment.<br/>Please select available class
-            from the list: </h2>
-        {% for emptyClass in emptyClasses %}
-            <div class="row">
-                <div class="col-6 offset-3 mt-2 mb-2">
-                    <span class="font-weight-bold">Grade:</span> {{ emptyClass.name }}
-                    <a href="{{ path('teacher_subscribe', {'id': emptyClass.id,}) }}"
-                       class="float-right btn-primary btn">Select <i class="ml-1 fas fa-arrow-right"></i></a>
-                </div>
-            </div>
-        {% endfor %}
+        {% include 'teacher/partials/empty-classes.html.twig' %}
     {% else %}
-        <h2 class="text-center m-5">Welcome!</h2>
-        {% if unsubscribedStudents is defined and unsubscribedStudents|length > 0 %}
-            <h3 class="text-center m-2 mt-5">
-                You have ({{ unsubscribedStudents|length }}) unregistered students.
-            </h3>
-            <p class="unregistered-students text-center">
-                <a href="{{ path('teacher_students_list') }}">Please click here to register them <i class="register-icon fas fa-angle-double-right"></i></a>
-            </p>
-        {% endif %}
-        <div class="col-10 offset-1 col-md-8 offset-md-2 mt-5">
-            <div class="row mt-5">
-                <div class="col-6 text-center">
-                    <div class="grade-wrapper">
-                        <p class="grade-text">
-                            School Average Grade:
-                        </p>
-                        <div class="number-wrapper">
-                            <i class="icon fas fa-award"></i>
-                            <span>{{ (allGradesAverage)|number_format(2) }}</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 text-center">
-                    <div class="grade-wrapper {{ myClassAllAverageGrades < allGradesAverage ? 'lower-grade' : 'higher-grade' }}">
-                        <p class="grade-text">
-                            My Class Average Grade:
-                        </p>
-                        <div class="number-wrapper">
-                            <i class="icon fas fa-level-{{ myClassAllAverageGrades < allGradesAverage ? 'down' : 'up' }}-alt"></i>
-                            <span>{{ (myClassAllAverageGrades)|number_format(2) }}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row mt-5">
-                <div class="col-6 text-center">
-                    <div class="absence-wrapper">
-                        <p class="grade-text">
-                            School Median Absences:
-                        </p>
-                        <div class="number-wrapper single-number">
-                            <i class="icon far fa-times-circle"></i>
-                            <span>{{ allAbsencesMedian|number_format }}</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 text-center">
-                    <div class="absence-wrapper {{ myClassMedianAbsences > allAbsencesMedian ? 'lower-grade' : 'higher-grade' }}">
-                        <p class="grade-text">
-                            My Class Median Absences:
-                        </p>
-                        <div class="number-wrapper single-number">
-                            <i class="icon fas fa-level-{{ myClassMedianAbsences < allAbsencesMedian ? 'down' : 'up' }}-alt"></i>
-                            <span>{{ myClassMedianAbsences|number_format }}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        {% include 'teacher/partials/class-info.html.twig' %}
     {% endif %}
 {% endblock %}
 

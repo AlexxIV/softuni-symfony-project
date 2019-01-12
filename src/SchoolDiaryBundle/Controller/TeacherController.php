@@ -28,31 +28,34 @@ class TeacherController extends Controller
         /**
          * @var User $user
          */
+
         $user = $this->getUser();
 
         if (null === $user->getTeacherClass()) {
-            $schoolClassesWithoutTeacher = $this
-                ->getDoctrine()
-                ->getRepository(SchoolClass::class)
-                ->findBy(['teacher' => null]);
+
+            $emptyClasses = $this
+                    ->getDoctrine()
+                    ->getRepository(SchoolClass::class)
+                    ->findBy(['teacher' => null]);
 
             return $this->render('teacher/index.html.twig', array(
-                'emptyClasses' => $schoolClassesWithoutTeacher,
+                'emptyClasses' => $emptyClasses,
             ));
         }
 
         /**
          * @var SchoolClass $teacherClass
          */
-        $teacherClass = $this
-            ->getDoctrine()
-            ->getRepository(SchoolClass::class)
-            ->find($user->getTeacherClass());
 
-        $unsubscribedStudents = $this
-            ->getDoctrine()
-            ->getRepository(User::class)
-            ->findBy(['studentClass' => null, 'grade' => $teacherClass->getName()]);
+        $teacherClass = $this
+                ->getDoctrine()
+                ->getRepository(SchoolClass::class)
+                ->find($user->getTeacherClass());
+
+        $unconfirmedStudents = $this
+                ->getDoctrine()
+                ->getRepository(User::class)
+                ->findBy(['studentClass' => $teacherClass->getId(), 'confirmed' => false]);
 
         // School Grades
         $allGrades = $this
@@ -109,7 +112,7 @@ class TeacherController extends Controller
         }
 
         return $this->render('teacher/index.html.twig', array(
-            'unsubscribedStudents' => $unsubscribedStudents,
+            'unsubscribedStudents' => $unconfirmedStudents,
             'allGradesAverage' => StatisticsHelper::calculate_average($allGradesAverage),
             'allAbsencesMedian' => StatisticsHelper::calculate_median($absencesByUser),
             'myClassAllAverageGrades' => StatisticsHelper::calculate_average($myClassAverageGrades),
@@ -124,44 +127,39 @@ class TeacherController extends Controller
      */
     public function subscribeAction($id)
     {
-        /**
-         *
-         * @var SchoolClass $schoolClass
-         * @var User $user
-         *
-         */
-
-        $user = $this
-                ->getDoctrine()
-                ->getRepository(User::class)
-                ->find($this->getUser()->getId());
-
+       /** @var SchoolClass $schoolClass */
         $schoolClass = $this
             ->getDoctrine()
             ->getRepository(SchoolClass::class)
             ->find($id);
 
+        if (null !== $schoolClass) {
 
+            $schoolClassTeacher = $schoolClass->getTeacher();
 
-        if (null !== $schoolClass && null !== $user) {
+            if (null === $schoolClassTeacher) {
+                $user = $this->getUser();
 
-            if (
-                null === $schoolClass->getTeacher() &&
-                null === $user->getTeacherClass()
-            ) {
-                $em = $this->getDoctrine()->getManager();
+                if (null !== $user) {
+                    $schoolClass->setTeacher($user);
 
-                $schoolClass->setTeacher($user);
-                $user->setTeacherClass($schoolClass);
-                
-                $em->flush();
+                    $em = $this
+                            ->getDoctrine()
+                            ->getManager();
 
-                $this->addFlash('success', 'Successfully selected class!');
-                return $this->redirectToRoute('teacher_home');
+                    $em->persist($schoolClass);
+                    $em->flush();
+
+                    $this->addFlash('success', 'Successfully selected class!');
+                }
             }
+            $this->addFlash('danger', 'The class already has a teacher!');
         }
 
-        $this->addFlash('danger', 'An error occurred');
+        $this->addFlash('danger', 'Class does not exist!');
+
+
+
         return $this->redirectToRoute('teacher_home');
     }
 

@@ -23,24 +23,24 @@ exports.default = (() => {
 
     });
 
-    $('#main-wrapper').on('click', 'input#user_isTeacher', function (e) {
-        if ($(e.target).is(':checked')) {
-                $('#user_grade').parent().hide();
-        } else {
-            $('#user_grade').parent().show();
-        }
-    })
+    // $('#main-wrapper').on('click', 'input#user_registerTeacher', function (e) {
+    //     if ($(e.target).is(':checked')) {
+    //             $('#user_grade').parent().hide();
+    //     } else {
+    //         $('#user_grade').parent().show();
+    //     }
+    // });
 
     $(document).ready(function () {
         let regForm = $('#register-form');
         let errors = regForm.find('.is-invalid');
 
         if(errors.length > 0) {
-            let teacher = regForm.find('#user_isTeacher').val();
+            let teacher = regForm.find('#user_registerTeacher').val();
             switch (teacher) {
                 case '1':
                     $('#main-wrapper').find('#teacher-register').addClass('out').hide();
-                    regForm.find('#user_grade').parent().hide();
+                    regForm.find('#user_studentClass').val('').parent().hide();
                     regForm.show();
                     break;
                 case '0':

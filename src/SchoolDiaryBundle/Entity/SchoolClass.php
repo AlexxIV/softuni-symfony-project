@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\OneToOne;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * SchoolClass
@@ -26,16 +27,31 @@ class SchoolClass
     private $id;
 
     /**
-     * @var string
-     * @ORM\Column(name="name", type="string", unique=true)
+     * @var int;
+     *
+     * @ORM\Column(name="class_number_identifier", type="integer", nullable=false)
+     *
+     * * @Assert\Range(
+     *      min = 1,
+     *      max = 12,
+     *      minMessage = "Please select graden in range [1-12]",
+     *      maxMessage = "Please select graden in range [1-12]"
+     * )
      */
-    private $name;
+    private $classNumberIdentifier;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="class_letter_identifier", type="string", nullable=false, length=1)
+     */
+    private $classLetterIdentifier;
 
     /**
      * @var User
      *
-     * @OneToOne(targetEntity="User", mappedBy="teacherClass")
-     * @JoinColumn(name="teacher", referencedColumnName="id")
+     * @OneToOne(targetEntity="User", inversedBy="teacherClass")
+     * @JoinColumn(name="teacher_id", referencedColumnName="id")
      */
     private $teacher;
 
@@ -47,14 +63,14 @@ class SchoolClass
      */
     private $students;
 
-    /**
-     * @var Schedule
-     *
-     * @OneToOne(targetEntity="Schedule", inversedBy="schoolClass")
-     * @JoinColumn(name="schedule_id", referencedColumnName="id")
-     *
-     */
-    private $schedule;
+//    /**
+//     * @var Schedule
+//     *
+//     * @OneToOne(targetEntity="Schedule", inversedBy="schoolClass")
+//     * @JoinColumn(name="schedule_id", referencedColumnName="id")
+//     *
+//     */
+//    private $schedule;
 
     public function __construct()
     {
@@ -66,31 +82,48 @@ class SchoolClass
      *
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getName()
+    public function getClassNumberIdentifier(): int
     {
-        return $this->name;
+        return $this->classNumberIdentifier;
     }
 
     /**
-     * @param string $name
+     * @param int $classNumberIdentifier
      */
-    public function setName(string $name): void
+    public function setClassNumberIdentifier(int $classNumberIdentifier): void
     {
-        $this->name = $name;
+        $this->classNumberIdentifier = $classNumberIdentifier;
     }
+
+    /**
+     * @return string
+     */
+    public function getClassLetterIdentifier(): string
+    {
+        return $this->classLetterIdentifier;
+    }
+
+    /**
+     * @param string $classLetterIdentifier
+     */
+    public function setClassLetterIdentifier(string $classLetterIdentifier): void
+    {
+        $this->classLetterIdentifier = $classLetterIdentifier;
+    }
+
 
     /**
      * @return User
      */
-    public function getTeacher()
+    public function getTeacher(): ?User
     {
         return $this->teacher;
     }
@@ -106,33 +139,36 @@ class SchoolClass
     /**
      * @return ArrayCollection
      */
-    public function getStudents()
+    public function getStudents(): ArrayCollection
     {
         return $this->students;
     }
 
-    /**
-     * @param ArrayCollection $students
-     */
-    public function setStudents(ArrayCollection $students): void
+    public function addStudent(User $student)
     {
-        $this->students = $students;
+        $this->students[] = $student;
+        return $this;
     }
 
-    /**
-     * @return Schedule
-     */
-    public function getSchedule()
+    public function getGradeForSelect()
     {
-        return $this->schedule;
+        return $this->getClassNumberIdentifier() . $this->getClassLetterIdentifier();
     }
 
-    /**
-     * @param Schedule $schedule
-     */
-    public function setSchedule(Schedule $schedule): void
-    {
-        $this->schedule = $schedule;
-    }
+//    /**
+//     * @return Schedule
+//     */
+//    public function getSchedule()
+//    {
+//        return $this->schedule;
+//    }
+//
+//    /**
+//     * @param Schedule $schedule
+//     */
+//    public function setSchedule(Schedule $schedule): void
+//    {
+//        $this->schedule = $schedule;
+//    }
 }
 

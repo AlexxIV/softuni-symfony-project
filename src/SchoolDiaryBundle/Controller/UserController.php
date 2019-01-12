@@ -2,7 +2,6 @@
 
 namespace SchoolDiaryBundle\Controller;
 
-use http\Env\Response;
 use SchoolDiaryBundle\Entity\Days;
 use SchoolDiaryBundle\Entity\Role;
 use SchoolDiaryBundle\Entity\Schedule;
@@ -12,6 +11,7 @@ use SchoolDiaryBundle\Form\UserType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -69,7 +69,7 @@ class UserController extends Controller
             /** @var UploadedFile $file */
             $file = $form->getData()->getImage();
 
-            $fileName = md5(uniqid()) . '.' . $file->guessExtension();
+            $fileName = md5(uniqid('', true)) . '.' . $file->guessExtension();
 
             try {
                 $file->move($this->getParameter('images_directory'),
@@ -83,50 +83,25 @@ class UserController extends Controller
             $password = $this->get('security.password_encoder')
                 ->encodePassword($user, $user->getPassword());
 
-            $isTeacher = $form->getData()->getIsTeacher();
-            if ($isTeacher) {
+            $registerTeacher = $form->get('registerTeacher')->getData();
+
+            if ($registerTeacher) {
                 $role = $this
                     ->getDoctrine()
                     ->getRepository(Role::class)
-                    ->findOneBy(array('name' => 'ROLE_TEACHER'));
-//
-                $user->setIsTeacher(true);
-//                foreach ($roles as $role) {
-//                    $user->addRole($role);
-//                }
+                    ->findOneBy(['name' => 'ROLE_TEACHER']);
 
+                $user->setConfirmed(true);
             } else {
                 $role = $this
                     ->getDoctrine()
                     ->getRepository(Role::class)
                     ->findOneBy(['name' => 'ROLE_USER']);
 
-
-
-//                $studentClass = $this->getDoctrine()
-//                                    ->getRepository(SchoolClass::class)
-//                                    ->findOneBy(['name' => $user->getGrade()]);
-//
-//                if (null !== $studentClass) {
-//                    $user->setStudentClass($studentClass);
-//                } else {
-//                    $em = $this->getDoctrine()->getManager();
-//
-//
-//                    $studentClass = new SchoolClass();
-//                    $schedule = new Schedule();
-//
-//                    $em->persist($schedule);
-//
-//                    $studentClass->setSchedule($schedule);
-//                    $studentClass->setName($user->getGrade());
-//                    $em->persist($studentClass);
-//
-//                    $user->setStudentClass($studentClass);
-//                }
+                $user->setConfirmed(false);
             }
-            $user->addRole($role);
 
+            $user->addRole($role);
             $user->setPassword($password);
 
             $em = $this->getDoctrine()->getManager();
@@ -138,7 +113,7 @@ class UserController extends Controller
             return $this->redirectToRoute('security_login');
         }
 
-//
+//          ERRORS HANDLER
 //        $errors = array();
 //
 //        foreach ($form->all() as $child) {
