@@ -172,7 +172,7 @@ class SchoolClass
 
     public function getGradeForSelect()
     {
-        return $this->getClassNumberIdentifier() . $this->getClassLetterIdentifier();
+        return $this->getClassNumberIdentifier() . ' ' . $this->getClassLetterIdentifier();
     }
 
 

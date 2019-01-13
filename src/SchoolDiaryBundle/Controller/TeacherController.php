@@ -2,14 +2,18 @@
 
 namespace SchoolDiaryBundle\Controller;
 
+use Doctrine\ORM\EntityRepository;
 use SchoolDiaryBundle\Entity\Absences;
 use SchoolDiaryBundle\Entity\Days;
 use SchoolDiaryBundle\Entity\PersonalGrades;
 use SchoolDiaryBundle\Entity\Schedule;
 use SchoolDiaryBundle\Entity\SchoolClass;
 use SchoolDiaryBundle\Entity\User;
+use SchoolDiaryBundle\Form\SelectClass;
 use SchoolDiaryBundle\helpers\StatisticsHelper;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,15 +36,7 @@ class TeacherController extends Controller
         $user = $this->getUser();
 
         if (null === $user->getTeacherClass()) {
-
-            $emptyClasses = $this
-                    ->getDoctrine()
-                    ->getRepository(SchoolClass::class)
-                    ->findBy(['isLocked' => false]);
-
-            return $this->render('teacher/index.html.twig', array(
-                'emptyClasses' => $emptyClasses,
-            ));
+            return $this->forward('SchoolDiaryBundle:Teacher:subscribe');
         }
 
         /**
@@ -118,45 +114,65 @@ class TeacherController extends Controller
             'myClassAllAverageGrades' => StatisticsHelper::calculate_average($myClassAverageGrades),
             'myClassMedianAbsences' => StatisticsHelper::calculate_median($myClassMedianAbsences)
         ));
-    }
+     }
 
     /**
-     * @Route("/teacher/subscribe/{id}", name="teacher_subscribe")
-     * @param $id
-     * @return RedirectResponse
+     * @Route("/teacher/subscribe", name="teacher_subscribe")
+     * @param Request $request
+     * @return RedirectResponse|Response
      */
-    public function subscribeAction($id)
+    public function subscribeAction(Request $request)
     {
-       /** @var SchoolClass $schoolClass */
-        $schoolClass = $this
-            ->getDoctrine()
-            ->getRepository(SchoolClass::class)
-            ->find($id);
+        $form = $this->createFormBuilder()
+            ->add('teacherClass', EntityType::class, array(
+                'label' => 'Please select your class',
+                'class' => SchoolClass::class,
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('c')
+                        ->where('c.isLocked <> true');
+                },
+                'choice_label' => 'gradeForSelect',
+                'expanded' => true,
+            ))
+            ->add('submit', SubmitType::class, array(
+                'label' => 'Select',
+//                'attr' => array(
+//                    'class' => 'd-none'
+//                )
+            ))
+            ->getForm();
 
-        if (null !== $schoolClass && !$schoolClass->isLocked()) {
 
-                /** @var User $user */
-                $user = $this->getUser();
+        $form->handleRequest($request);
 
-                if (null !== $user) {
-                    $em = $this->getDoctrine()->getManager();
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var SchoolClass $teacherClass */
+            $teacherClass = $form->get('teacherClass')->getData();
 
-                    $user->setTeacherClass($schoolClass);
-                    $schoolClass->setIsLocked(true);
-                    $schoolClass->addTeacher($user);
+            /** @var User $user */
+            $user = $this->getUser();
 
-                    $em->persist($schoolClass);
-                    $em->persist($user);
-                    $em->flush();
+            $teacherClass->addTeacher($user);
+            $teacherClass->setIsLocked(true);
 
-                    $this->addFlash('success', 'Successfully selected class!');
-                    return $this->redirectToRoute('teacher_home');
-                }
+            $user->setTeacherClass($teacherClass);
 
+            $em = $this
+                    ->getDoctrine()
+                    ->getManager();
+
+            $em->persist($teacherClass);
+            $em->persist($user);
+
+            $em->flush();
+
+            $this->addFlash('success','Successfully selected class!');
+            return $this->redirectToRoute('teacher_home');
         }
 
-        $this->addFlash('danger', 'Class does not exist!');
-        return $this->redirectToRoute('teacher_home');
+        return $this->render('teacher/empty-classes.html.twig', array(
+            'form' => $form->createView(),
+        ));
     }
 
     /**
