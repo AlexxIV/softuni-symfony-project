@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class TeacherController extends Controller
 {
@@ -26,14 +27,14 @@ class TeacherController extends Controller
 
     /**
      * @Route("/teacher", name="teacher_home")
+     * @param UserInterface $user
+     * @return Response
      */
-    public function indexAction()
+    public function indexAction(UserInterface $user)
     {
-        /**
-         * @var User $user
-         */
 
-        $user = $this->getUser();
+        var_dump($user);
+        var_dump($this->get('security.token_storage'));
 
         if (null === $user->getTeacherClass()) {
             return $this->forward('SchoolDiaryBundle:Teacher:subscribe');
