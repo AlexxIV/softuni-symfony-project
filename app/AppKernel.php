@@ -17,11 +17,12 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new SchoolDiaryBundle\SchoolDiaryBundle(),
-            new Symfony\WebpackEncoreBundle\WebpackEncoreBundle()
+            new Symfony\WebpackEncoreBundle\WebpackEncoreBundle(),
+            new Symfony\Bundle\DebugBundle\DebugBundle()
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {
-            $bundles[] = new Symfony\Bundle\DebugBundle\DebugBundle();
+            //$bundles[] = new Symfony\Bundle\DebugBundle\DebugBundle();
             $bundles[] = new Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
             $bundles[] = new Sensio\Bundle\DistributionBundle\SensioDistributionBundle();
 
