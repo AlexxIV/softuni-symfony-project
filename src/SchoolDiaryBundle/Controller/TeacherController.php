@@ -33,7 +33,15 @@ class TeacherController extends Controller
     public function indexAction(UserInterface $user)
     {
         if (null === $user->getTeacherClass()) {
-            return $this->forward('SchoolDiaryBundle:Teacher:subscribe');
+            $emptyClasses = $this
+                    ->getDoctrine()
+                    ->getRepository(SchoolClass::class)
+                    ->findBy(['teacher' => null]);
+
+            return $this->render('teacher/index.html.twig', array(
+                'emptyClasses' => $emptyClasses,
+            ));
+
         }
 
         /**
@@ -114,65 +122,43 @@ class TeacherController extends Controller
      }
 
     /**
-     * @Route("/teacher/subscribe", name="teacher_subscribe")
+     * @Route("/teacher/subscribe/{id}", name="teacher_subscribe")
      * @param UserInterface $user
-     * @param Request $request
+     * @param $id
      * @return RedirectResponse|Response
      */
-    public function subscribeAction(UserInterface $user, Request $request)
+    public function subscribeAction(UserInterface $user, $id)
     {
-        $form = $this->createFormBuilder()
-            ->add('teacherClass', EntityType::class, array(
-                'label' => 'Please select your class',
-                'class' => SchoolClass::class,
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('c')
-                        ->where('c.isLocked <> true');
-                },
-                'choice_label' => 'gradeForSelect',
-                'expanded' => true,
-            ))
-            ->add('submit', SubmitType::class, array(
-                'label' => 'Select',
-//                'attr' => array(
-//                    'class' => 'd-none'
-//                )
-            ))
-            ->getForm();
+        /** @var User $user */
+        $teacherClass = $this
+                ->getDoctrine()
+                ->getRepository(SchoolClass::class)
+                ->find($id);
 
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            /**
-             * @var SchoolClass $teacherClass
-             * @var User $user
-             */
-            $teacherClass = $form->get('teacherClass')->getData();
-
-
+        if (
+            null !== $teacherClass &&
+            null === $teacherClass->getTeacher() &&
+            null === $user->getTeacherClass()
+        ) {
+            $user->setTeacherClass($teacherClass);
             $teacherClass->setTeacher($user);
             $teacherClass->setIsLocked(true);
 
-            $user->setTeacherClass($teacherClass);
-
-
             $em = $this
-                    ->getDoctrine()
-                    ->getManager();
+                ->getDoctrine()
+                ->getManager();
 
             $em->persist($teacherClass);
             $em->persist($user);
 
             $em->flush();
 
-            $this->addFlash('success','Successfully selected class!');
+            $this->addFlash('success', 'Successfully selected class');
             return $this->redirectToRoute('teacher_home');
         }
 
-        return $this->render('teacher/empty-classes.html.twig', array(
-            'form' => $form->createView(),
-        ));
+        $this->addFlash('danger', 'Error selecting class, please try again later');
+        return $this->redirectToRoute('teacher_home');
     }
 
     /**

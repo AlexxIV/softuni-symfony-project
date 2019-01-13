@@ -363,7 +363,7 @@ class User implements UserInterface, \Serializable
     {
         $this->confirmed = $confirmed;
     }
-    
+
 
     public function isAdmin(): bool
     {

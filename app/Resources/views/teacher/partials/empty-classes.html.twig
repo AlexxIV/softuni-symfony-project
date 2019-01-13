@@ -1,0 +1,22 @@
+<h2 class="text-center m-5">You do not have a teaching class for the moment.</h2>
+<h4 class="text-center m-2">Please select available class from the list: </h4>
+
+<div class="row mt-5">
+    {% for emptyClass in emptyClasses %}
+        <div class="col-2 text-center">
+            <a href="{{ path('teacher_subscribe', {'id': emptyClass.id}) }}" class="btn btn-primary class-select-pill">
+                <span class="p-3 font-weight-bold text-uppercase">{{ emptyClass.gradeForSelect }}</span>
+            </a>
+        </div>
+    {% endfor %}
+</div>
+
+
+
+{#{% extends 'base.html.twig' %}#}
+{#{% block main %}#}
+    {#<h2 class="text-center m-5">You do not have a teaching class for the moment.<br/>Please select available class#}
+        {#from the list: </h2>#}
+    {#{{ form(form, {'method': 'POST', 'action': path('teacher_subscribe'), 'attr' : { 'class': 'p-5', 'id': 'select-class-form' } }) }}#}
+
+{#{% endblock %}#}
