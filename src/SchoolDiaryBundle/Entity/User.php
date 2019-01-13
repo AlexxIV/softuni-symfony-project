@@ -87,11 +87,8 @@ class User implements UserInterface
     private $roles;
 
     /**
-     * @var SchoolClass
-     *
-     * @ManyToOne(targetEntity="SchoolClass", inversedBy="teacher")
-     * @JoinColumn(name="teacher_class", referencedColumnName="id")
-     *
+     * One Customer has One Cart.
+     * @OneToOne(targetEntity="SchoolClass", mappedBy="teacher")
      */
     private $teacherClass;
 
@@ -281,20 +278,22 @@ class User implements UserInterface
     }
 
     /**
-     * @return SchoolClass
+     * @return mixed
      */
-    public function getTeacherClass(): ?SchoolClass
+    public function getTeacherClass()
     {
         return $this->teacherClass;
     }
 
     /**
-     * @param SchoolClass $teacherClass
+     * @param mixed $teacherClass
      */
-    public function setTeacherClass(SchoolClass $teacherClass): void
+    public function setTeacherClass($teacherClass): void
     {
         $this->teacherClass = $teacherClass;
     }
+
+
 
     /**
      * @return SchoolClass

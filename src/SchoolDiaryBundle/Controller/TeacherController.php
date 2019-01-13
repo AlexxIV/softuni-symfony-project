@@ -68,11 +68,11 @@ class TeacherController extends Controller
             ->findAll();
 
         $absencesByUser = [];
-        foreach ($allUsers as $user) {
-            if (in_array('ROLE_TEACHER', $user->getRoles())) {
+        foreach ($allUsers as $singleUser) {
+            if (in_array('ROLE_TEACHER', $singleUser->getRoles())) {
                 continue;
             }
-            $absencesByUser[] = count($user->getAbsences());
+            $absencesByUser[] = count($singleUser->getAbsences());
         }
 
         // My Class Grades
@@ -97,11 +97,11 @@ class TeacherController extends Controller
             ->findBy(['studentClass' => $user->getTeacherClass()->getId()]);
 
         $myClassMedianAbsences = [];
-        foreach ($allStudentsFromMyClass as $user) {
-            if (in_array('ROLE_TEACHER', $user->getRoles())) {
+        foreach ($allStudentsFromMyClass as $singleUser) {
+            if (in_array('ROLE_TEACHER', $singleUser->getRoles())) {
                 continue;
             }
-            $myClassMedianAbsences[] = count($user->getAbsences());
+            $myClassMedianAbsences[] = count($singleUser->getAbsences());
         }
 
         return $this->render('teacher/index.html.twig', array(
@@ -118,7 +118,7 @@ class TeacherController extends Controller
      * @param Request $request
      * @return RedirectResponse|Response
      */
-    public function subscribeAction(Request $request)
+    public function subscribeAction(UserInterface $user, Request $request)
     {
         $form = $this->createFormBuilder()
             ->add('teacherClass', EntityType::class, array(
@@ -146,20 +146,23 @@ class TeacherController extends Controller
             /** @var SchoolClass $teacherClass */
             $teacherClass = $form->get('teacherClass')->getData();
 
-            /** @var User $user */
-            $user = $this->getUser();
+            $dbUser = $this
+                    ->getDoctrine()
+                    ->getRepository(User::class)
+                    ->find($user->getId());
 
-            $teacherClass->addTeacher($user);
+            $teacherClass->setTeacher($dbUser);
             $teacherClass->setIsLocked(true);
 
-            $user->setTeacherClass($teacherClass);
+            $dbUser->setTeacherClass($teacherClass);
+
 
             $em = $this
                     ->getDoctrine()
                     ->getManager();
 
             $em->persist($teacherClass);
-            $em->persist($user);
+            $em->persist($dbUser);
 
             $em->flush();
 

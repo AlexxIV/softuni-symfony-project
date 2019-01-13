@@ -5,6 +5,7 @@ namespace SchoolDiaryBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\OneToOne;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -48,8 +49,9 @@ class SchoolClass
     private $classLetterIdentifier;
 
     /**
-     *
-     * @OneToMany(targetEntity="User", mappedBy="teacherClass")
+     * One Cart has One Customer.
+     * @OneToOne(targetEntity="User", inversedBy="teacherClass")
+     * @JoinColumn(name="teacher_id", referencedColumnName="id")
      */
     private $teacher;
 
@@ -127,18 +129,22 @@ class SchoolClass
     }
 
     /**
-     * @return ArrayCollection
+     * @return mixed
      */
-    public function getTeacher(): ArrayCollection
+    public function getTeacher()
     {
         return $this->teacher;
     }
 
-    public function addTeacher(User $teacher)
+    /**
+     * @param mixed $teacher
+     */
+    public function setTeacher($teacher): void
     {
-        $this->teacher[] = $teacher;
-        return $this;
+        $this->teacher = $teacher;
     }
+
+
 
     /**
      * @return ArrayCollection
