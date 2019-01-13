@@ -32,10 +32,6 @@ class TeacherController extends Controller
      */
     public function indexAction(UserInterface $user)
     {
-
-        var_dump($user);
-        var_dump($this->get('security.token_storage'));
-
         if (null === $user->getTeacherClass()) {
             return $this->forward('SchoolDiaryBundle:Teacher:subscribe');
         }
