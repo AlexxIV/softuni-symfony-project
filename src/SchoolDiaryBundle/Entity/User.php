@@ -14,10 +14,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * User
  *
- * @ORM\Table(name="user")
+ * @ORM\Table(name="app_users")
  * @ORM\Entity(repositoryClass="SchoolDiaryBundle\Repository\UserRepository")
  */
-class User implements UserInterface
+class User implements UserInterface, \Serializable
 {
     /**
      * @var int
@@ -87,7 +87,6 @@ class User implements UserInterface
     private $roles;
 
     /**
-     * One Customer has One Cart.
      * @OneToOne(targetEntity="SchoolClass", mappedBy="teacher")
      */
     private $teacherClass;
@@ -134,6 +133,7 @@ class User implements UserInterface
      */
     private $confirmed;
 
+
     public function __construct()
     {
         $this->roles = new ArrayCollection();
@@ -141,6 +141,7 @@ class User implements UserInterface
         $this->personalGrades = new ArrayCollection();
 
         $this->absences = new ArrayCollection();
+
     }
 
     /**
@@ -308,22 +309,6 @@ class User implements UserInterface
         $this->studentClass = $studentClass;
     }
 
-    /**
-     * @return string
-     */
-    public function getGrade(): ?string
-    {
-        return $this->grade;
-    }
-
-    /**
-     * @param string $grade
-     */
-    public function setGrade(string $grade): void
-    {
-        $this->grade = $grade;
-    }
-
     public function getPersonalGrades(): ArrayCollection
     {
         return $this->personalGrades;
@@ -378,7 +363,7 @@ class User implements UserInterface
     {
         $this->confirmed = $confirmed;
     }
-
+    
 
     public function isAdmin(): bool
     {
@@ -393,6 +378,30 @@ class User implements UserInterface
     public function isStudent(): bool
     {
         return \in_array('ROLE_USER', $this->getRoles(), true);
+    }
+
+    /** @see \Serializable::serialize() */
+    public function serialize()
+    {
+        return serialize(array(
+            $this->id,
+            $this->email,
+            $this->password,
+            // see section on salt below
+            // $this->salt,
+        ));
+    }
+
+    /** @see \Serializable::unserialize() */
+    public function unserialize($serialized)
+    {
+        list (
+            $this->id,
+            $this->email,
+            $this->password,
+            // see section on salt below
+            // $this->salt
+            ) = unserialize($serialized, array('allowed_classes' => false));
     }
 
 

@@ -49,7 +49,6 @@ class SchoolClass
     private $classLetterIdentifier;
 
     /**
-     * One Cart has One Customer.
      * @OneToOne(targetEntity="User", inversedBy="teacherClass")
      * @JoinColumn(name="teacher_id", referencedColumnName="id")
      */

@@ -115,6 +115,7 @@ class TeacherController extends Controller
 
     /**
      * @Route("/teacher/subscribe", name="teacher_subscribe")
+     * @param UserInterface $user
      * @param Request $request
      * @return RedirectResponse|Response
      */
@@ -143,18 +144,17 @@ class TeacherController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var SchoolClass $teacherClass */
+            /**
+             * @var SchoolClass $teacherClass
+             * @var User $user
+             */
             $teacherClass = $form->get('teacherClass')->getData();
 
-            $dbUser = $this
-                    ->getDoctrine()
-                    ->getRepository(User::class)
-                    ->find($user->getId());
 
-            $teacherClass->setTeacher($dbUser);
+            $teacherClass->setTeacher($user);
             $teacherClass->setIsLocked(true);
 
-            $dbUser->setTeacherClass($teacherClass);
+            $user->setTeacherClass($teacherClass);
 
 
             $em = $this
@@ -162,7 +162,7 @@ class TeacherController extends Controller
                     ->getManager();
 
             $em->persist($teacherClass);
-            $em->persist($dbUser);
+            $em->persist($user);
 
             $em->flush();
 

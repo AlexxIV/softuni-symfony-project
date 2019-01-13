@@ -13,7 +13,7 @@ security:
         secured_area:
             # this firewall applies to all URLs
             pattern: ^/
-
+            http_basic: ~
             anonymous: true
 
             form_login:
