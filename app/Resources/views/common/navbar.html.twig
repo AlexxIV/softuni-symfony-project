@@ -10,21 +10,21 @@
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item {% if app.user %}
                                         {% if ((is_granted('ROLE_ADMIN')) and (app.request.attributes.get('_route') == 'admin_home')) or
-                                            ((is_granted('ROLE_TEACHER')) and (app.request.attributes.get('_route')) == 'teacher_home') or
-                                            ((is_granted('ROLE_USER')) and (app.request.attributes.get('_route') == 'student_home')) %}active
+                    ((is_granted('ROLE_TEACHER')) and (app.request.attributes.get('_route')) == 'teacher_home') or
+                    ((is_granted('ROLE_USER')) and (app.request.attributes.get('_route') == 'student_home')) %}active
                                         {% endif %}
                                     {% endif %}">
-                    <a class="nav-link" href="{% if app.user %}
+                    <a class="nav-link" href="{{ path('homepage') }}{# if app.user %}
                                                 {% if (is_granted('ROLE_ADMIN')) %}
                                                     {{ path('admin_home') }}
                                                     {% elseif (is_granted('ROLE_TEACHER')) %}
                                                     {{ path('teacher_home') }}
                                                     {% elseif (is_granted('ROLE_USER')) %}
                                                     {{ path('student_home') }}
+                                                    {% endif %}
                                                     {% else %}
                                                     {{ path('homepage') }}
-                                                {% endif %}
-                                            {% endif %}"
+                                            {% endif #}"
                     >Home</a>
                 </li>
             </ul>
@@ -34,29 +34,29 @@
                         {# TODO #}
                     {% endif %}
                     {% if app.user and is_granted('ROLE_USER') and not is_granted('ROLE_TEACHER') and not is_granted('ROLE_ADMIN') %}
-                        <li class="nav-item {% if app.request.attributes.get('_route') == 'student_grades'%}active{% endif %}">
+                        <li class="nav-item {% if app.request.attributes.get('_route') == 'student_grades' %}active{% endif %}">
                             <a class="nav-link"
                                href="{{ path('student_grades') }}"
                             >Grades Book</a>
                         </li>
                     {% endif %}
                     {% if app.user and is_granted('ROLE_USER') and not is_granted('ROLE_TEACHER') and not is_granted('ROLE_ADMIN') %}
-                        <li class="nav-item {% if app.request.attributes.get('_route') == 'student_absences'%}active{% endif %}">
+                        <li class="nav-item {% if app.request.attributes.get('_route') == 'student_absences' %}active{% endif %}">
                             <a class="nav-link"
                                href="{{ path('student_absences') }}"
                             >Absences</a>
                         </li>
                     {% endif %}
                     {% if is_granted('ROLE_TEACHER') %}
-                    <li class="nav-item {% if app.request.attributes.get('_route') == 'teacher_students_list' %}active{% endif %}">
-                        <a class="nav-link"
-                           href="{{ path('teacher_students_list') }}"
-                        >My Class</a>
-                    </li>
+                        <li class="nav-item {% if app.request.attributes.get('_route') == 'teacher_students_list' %}active{% endif %}">
+                            <a class="nav-link"
+                               href="{{ path('teacher_students_list') }}"
+                            >My Class</a>
+                        </li>
                     {% endif %}
                     <li class="nav-item {% if app.request.attributes.get('_route') == 'student_schedule' or app.request.attributes.get('_route') == 'teacher_schedule' %}active{% endif %}">
                         <a class="nav-link"
-                            href="
+                           href="
                             {% if is_granted('ROLE_TEACHER') %}
                                 {{ path('teacher_schedule') }}
                             {% else %}

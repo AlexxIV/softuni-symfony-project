@@ -143,12 +143,7 @@ class SchoolClass
         $this->teacher = $teacher;
     }
 
-
-
-    /**
-     * @return ArrayCollection
-     */
-    public function getStudents(): ?ArrayCollection
+    public function getStudents()
     {
         return $this->students;
     }

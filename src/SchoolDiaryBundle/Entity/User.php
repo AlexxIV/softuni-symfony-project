@@ -309,7 +309,7 @@ class User implements UserInterface, \Serializable
         $this->studentClass = $studentClass;
     }
 
-    public function getPersonalGrades(): ArrayCollection
+    public function getPersonalGrades()
     {
         return $this->personalGrades;
     }

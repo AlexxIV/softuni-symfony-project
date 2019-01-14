@@ -10,4 +10,15 @@ namespace SchoolDiaryBundle\Repository;
  */
 class AbsencesRepository extends \Doctrine\ORM\EntityRepository
 {
+//    public function getCountByUser()
+//    {
+//        $query = $this->createQueryBuilder('a');
+//        $query
+//            ->innerJoin('a.student', 's')
+//            ->select('')
+//            ->where('s.studentClass = :identifier')
+//            ->setParameter('identifier', $classId);
+//
+//        return $query->getQuery()->getResult();
+//    }
 }

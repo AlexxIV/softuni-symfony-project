@@ -63,4 +63,17 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
 //        return $qb->getQuery()
 //            ->getResult();
 //    }
+
+
+    public function getAbsencesCountByUser()
+    {
+        $query = $this->createQueryBuilder('s');
+        $query
+            ->innerJoin('s.absences', 'a')
+            ->select('COUNT(a) as absence_count')
+            ->where('s.id > 0');
+
+        return $query->getQuery()->getResult();
+    }
+
 }

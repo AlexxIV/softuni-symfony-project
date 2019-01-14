@@ -4,7 +4,7 @@
         {% if emptyClasses|length > 0 %}
             {% include 'teacher/partials/empty-classes.html.twig' %}
         {% else %}
-            <h2>Sorry no class for the moment</h2>
+            <h2>There are no empty class at the moment. Please try again later.</h2>
         {% endif %}
     {% else %}
         {% include 'teacher/partials/class-info.html.twig' %}
