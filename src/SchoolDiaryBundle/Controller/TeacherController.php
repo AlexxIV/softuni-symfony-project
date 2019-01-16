@@ -35,34 +35,51 @@ class TeacherController extends Controller
     {
         /** @var User $user */
         $teacherClass = $this
-                ->getDoctrine()
-                ->getRepository(SchoolClass::class)
-                ->find($id);
+            ->getDoctrine()
+            ->getRepository(SchoolClass::class)
+            ->find($id);
 
         if (
             null !== $teacherClass &&
             null === $teacherClass->getTeacher() &&
             null === $user->getTeacherClass()
         ) {
-            $user->setTeacherClass($teacherClass);
-            $teacherClass->setTeacher($user);
-            $teacherClass->setIsLocked(true);
-
             $em = $this
                 ->getDoctrine()
                 ->getManager();
 
-            $em->persist($teacherClass);
-            $em->persist($user);
 
+            $user->setTeacherClass($teacherClass);
+            $teacherClass->setTeacher($user);
+            $teacherClass->setIsLocked(true);
+
+            if (null === $teacherClass->getSchedule()) {
+                $schedule = new Schedule();
+                foreach (self::DAYS as $singleDay) {
+                    $day = new Days();
+                    $day->setDay($singleDay);
+                    $day->setSchedule($schedule);
+
+                    $em->persist($day);
+
+                    $schedule->addDay($day);
+                }
+                $schedule->setSchoolClass($teacherClass);
+                $teacherClass->setSchedule($schedule);
+
+                $em->persist($schedule);
+            }
+
+            $em->persist($user);
+            $em->persist($teacherClass);
             $em->flush();
 
-            $this->addFlash('success', 'Successfully selected class');
-            return $this->redirectToRoute('teacher_home');
+            $this->addFlash('success', 'Successfully selected class!');
+            return $this->redirectToRoute('homepage');
         }
 
         $this->addFlash('danger', 'Error selecting class, please try again later');
-        return $this->redirectToRoute('teacher_home');
+        return $this->redirectToRoute('homepage');
     }
 
     /**

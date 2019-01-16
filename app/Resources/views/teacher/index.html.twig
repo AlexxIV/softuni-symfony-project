@@ -1,13 +1,10 @@
-{% extends 'base.html.twig' %}
-{% block main %}
-    {% if emptyClasses is defined and emptyClasses|length > 0 %}
-        {% if emptyClasses|length > 0 %}
-            {% include 'teacher/partials/empty-classes.html.twig' %}
-        {% else %}
-            <h2>There are no empty class at the moment. Please try again later.</h2>
-        {% endif %}
+{% if emptyClasses is defined and emptyClasses|length > 0 %}
+    {% if emptyClasses|length > 0 %}
+        {% include 'teacher/partials/empty-classes.html.twig' %}
     {% else %}
-        {% include 'teacher/partials/class-info.html.twig' %}
+        <h2>There are no empty class at the moment. Please try again later.</h2>
     {% endif %}
-{% endblock %}
+{% else %}
+    {% include 'teacher/partials/class-info.html.twig' %}
+{% endif %}
 

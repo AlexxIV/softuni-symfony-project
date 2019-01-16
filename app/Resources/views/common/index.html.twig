@@ -1,4 +1,8 @@
 {% extends 'base.html.twig' %}
 {% block main %}
-
+    {% if (is_granted('ROLE_TEACHER')) %}
+        {% include 'teacher/index.html.twig' %}
+    {% else %}
+        {% include 'student/index.html.twig' %}
+    {% endif %}
 {% endblock %}

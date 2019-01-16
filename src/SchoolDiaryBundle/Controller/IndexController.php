@@ -47,7 +47,7 @@ class IndexController extends Controller
                     ->getRepository(SchoolClass::class)
                     ->findBy(['teacher' => null]);
 
-                return $this->render('teacher/index.html.twig', array(
+                return $this->render('common/index.html.twig', array(
                     'emptyClasses' => $emptyClasses,
                 ));
 
@@ -106,7 +106,7 @@ class IndexController extends Controller
 
             }
 
-            return $this->render('teacher/index.html.twig', array(
+            return $this->render('common/index.html.twig', array(
                 'unsubscribedStudents' => $unconfirmedStudents,
                 'allGradesAverage' => StatisticsHelper::calculate_average($allGrades),
                 'allAbsencesMedian' => StatisticsHelper::calculate_median($absencesByUser),
@@ -144,7 +144,7 @@ class IndexController extends Controller
             $absenceByStudent = 0;
         }
 
-        return $this->render('student/index.html.twig', array(
+        return $this->render('common/index.html.twig', array(
             'allAverageGrade' => StatisticsHelper::calculate_average($allGrades),
             'myAverageGrade' => StatisticsHelper::calculate_average($myGrades),
             'medianAbsences' => StatisticsHelper::calculate_median($absenceByStudent),

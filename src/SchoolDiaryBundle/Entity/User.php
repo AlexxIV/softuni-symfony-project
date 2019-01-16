@@ -141,7 +141,6 @@ class User implements UserInterface, \Serializable
         $this->personalGrades = new ArrayCollection();
 
         $this->absences = new ArrayCollection();
-
     }
 
     /**

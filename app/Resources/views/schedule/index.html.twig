@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+{% block main %}
+    <div class="row">
+        <div class="col-12 schedule-table mt-5">
+            {% if days is defined %}
+                {% include 'schedule/partials/schedule-content.html.twig' %}
+            {% else %}
+                {% include 'student/partials/not-confirmed.html.twig' %}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

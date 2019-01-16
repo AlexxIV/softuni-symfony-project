@@ -1,0 +1,29 @@
+<div class="custom-table-temlate" id="{{ is_granted('ROLE_TEACHER') ? 'editable-schedule' : 'student-schedule' }}">
+    <div class="header">Weekly Schedule</div>
+    <table cellspacing="0">
+        <tr>
+            {% for day in days %}
+                <th class="{{ day.day == "now"|date('l') ? 'active-day' : '' }}">{{ day.day }}</th>
+            {% endfor %}
+        </tr>
+        <tr>
+            {% for day in days %}
+                <td class="single-day {{ day.day }}" id="{{ day.id }}">
+                    <table cellspacing="0">
+                        {% for record in day.records %}
+                            <tr class="single-subject-row">
+                                <td class="single-subject">
+                                    <span class="row-index">{{ record.identifier }}.</span>
+                                    <span class="row-value">{{ record.value }}</span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </td>
+            {% endfor %}
+        </tr>
+    </table>
+    {% if (is_granted('ROLE_TEACHER')) %}
+        {% include 'schedule/partials/controls.html.twig' %}
+    {% endif %}
+</div>

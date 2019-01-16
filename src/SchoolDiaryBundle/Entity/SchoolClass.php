@@ -69,20 +69,18 @@ class SchoolClass
      */
     private $isLocked;
 
-//    /**
-//     * @var Schedule
-//     *
-//     * @OneToOne(targetEntity="Schedule", inversedBy="schoolClass")
-//     * @JoinColumn(name="schedule_id", referencedColumnName="id")
-//     *
-//     */
-//    private $schedule;
+    /**
+     * @var Schedule
+     *
+     * @OneToOne(targetEntity="Schedule", inversedBy="schoolClass")
+     * @JoinColumn(name="schedule_id", referencedColumnName="id")
+     *
+     */
+    private $schedule;
 
     public function __construct()
     {
         $this->students = new ArrayCollection();
-
-        $this->teacher = new ArrayCollection();
     }
 
     /**
@@ -172,25 +170,23 @@ class SchoolClass
 
     public function getGradeForSelect()
     {
-        return $this->getClassNumberIdentifier() . ' ' . $this->getClassLetterIdentifier();
+        return $this->getClassNumberIdentifier() . $this->getClassLetterIdentifier();
     }
 
+    /**
+     * @return Schedule
+     */
+    public function getSchedule()
+    {
+        return $this->schedule;
+    }
 
-
-//    /**
-//     * @return Schedule
-//     */
-//    public function getSchedule()
-//    {
-//        return $this->schedule;
-//    }
-//
-//    /**
-//     * @param Schedule $schedule
-//     */
-//    public function setSchedule(Schedule $schedule): void
-//    {
-//        $this->schedule = $schedule;
-//    }
+    /**
+     * @param Schedule $schedule
+     */
+    public function setSchedule(Schedule $schedule): void
+    {
+        $this->schedule = $schedule;
+    }
 }
 

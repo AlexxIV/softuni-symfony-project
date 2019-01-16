@@ -15,5 +15,8 @@
     box-shadow: unset;
     opacity: 1;
     border: 1px solid $baseColor;
+    background: #fff;
+    color: $baseColor;
+    transform: scale(0.95);
   }
 }

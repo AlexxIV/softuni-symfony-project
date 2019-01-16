@@ -1,58 +1,55 @@
-{% extends 'base.html.twig' %}
-{% block main %}
-    <div class="row mt-2">
-        <div class="col-12 text-center mt-5">
-            <h2>Welcome!</h2>
-        </div>
-        <div class="col-10 offset-1 col-md-8 offset-md-2 mt-5">
-            <div class="row mt-5">
-                <div class="col-6 text-center">
-                    <div class="grade-wrapper">
-                        <p class="grade-text">
-                            Class Average Grade:
-                        </p>
-                        <div class="number-wrapper">
-                            <i class="icon fas fa-award"></i>
-                            <span>{{ (allAverageGrade)|number_format(2) }}</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 text-center">
-                    <div class="grade-wrapper {{ myAverageGrade < allAverageGrade ? 'lower-grade' : 'higher-grade' }}">
-                        <p class="grade-text">
-                            My Average Grade:
-                        </p>
-                        <div class="number-wrapper">
-                            <i class="icon fas fa-level-{{ myAverageGrade < allAverageGrade ? 'down' : 'up' }}-alt"></i>
-                            <span>{{ (myAverageGrade)|number_format(2) }}</span>
-                        </div>
+<div class="row mt-2">
+    <div class="col-12 text-center mt-5">
+        <h2>Welcome!</h2>
+    </div>
+    <div class="col-10 offset-1 col-md-8 offset-md-2 mt-5">
+        <div class="row mt-5">
+            <div class="col-6 text-center">
+                <div class="grade-wrapper">
+                    <p class="grade-text">
+                        Class Average Grade:
+                    </p>
+                    <div class="number-wrapper">
+                        <i class="icon fas fa-award"></i>
+                        <span>{{ (allAverageGrade)|number_format(2) }}</span>
                     </div>
                 </div>
             </div>
-            <div class="row mt-5">
-                <div class="col-6 text-center">
-                    <div class="absence-wrapper">
-                        <p class="grade-text">
-                            Class Median Absences:
-                        </p>
-                        <div class="number-wrapper single-number">
-                            <i class="icon far fa-times-circle"></i>
-                            <span>{{ medianAbsences|number_format }}</span>
-                        </div>
+            <div class="col-6 text-center">
+                <div class="grade-wrapper {{ myAverageGrade < allAverageGrade ? 'lower-grade' : 'higher-grade' }}">
+                    <p class="grade-text">
+                        My Average Grade:
+                    </p>
+                    <div class="number-wrapper">
+                        <i class="icon fas fa-level-{{ myAverageGrade < allAverageGrade ? 'down' : 'up' }}-alt"></i>
+                        <span>{{ (myAverageGrade)|number_format(2) }}</span>
                     </div>
                 </div>
-                <div class="col-6 text-center">
-                    <div class="absence-wrapper {{ myAbsences >= medianAbsences ? 'lower-grade' : 'higher-grade' }}">
-                        <p class="grade-text">
-                            My Absences:
-                        </p>
-                        <div class="number-wrapper single-number">
-                            <i class="icon fas fa-level-{{ myAbsences < medianAbsences ? 'down' : 'up' }}-alt"></i>
-                            <span>{{ myAbsences }}</span>
-                        </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-6 text-center">
+                <div class="absence-wrapper">
+                    <p class="grade-text">
+                        Class Median Absences:
+                    </p>
+                    <div class="number-wrapper single-number">
+                        <i class="icon far fa-times-circle"></i>
+                        <span>{{ medianAbsences|number_format }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 text-center">
+                <div class="absence-wrapper {{ myAbsences >= medianAbsences ? 'lower-grade' : 'higher-grade' }}">
+                    <p class="grade-text">
+                        My Absences:
+                    </p>
+                    <div class="number-wrapper single-number">
+                        <i class="icon fas fa-level-{{ myAbsences < medianAbsences ? 'down' : 'up' }}-alt"></i>
+                        <span>{{ myAbsences }}</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-{% endblock %}
+</div>
