@@ -48,7 +48,7 @@ class GradesController extends Controller
         $em->persist($gradeToAdd);
         $em->flush();
 
-        $student->addGrade($gradeToAdd);
+        $student->addPersonalGrade($gradeToAdd);
         $em->persist($student);
         $em->flush();
 

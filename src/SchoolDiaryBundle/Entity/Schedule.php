@@ -34,12 +34,16 @@ class Schedule
     /**
      * @var ArrayCollection
      *
-     * @ORM\ManyToMany(targetEntity="Days", inversedBy="schedule")
-     * @ORM\JoinTable(name="schedule_days",
-     *     joinColumns={@ORM\JoinColumn(name="schedule_id", referencedColumnName="id")},
-     *     inverseJoinColumns={@ORM\JoinColumn(name="day_id", referencedColumnName="id", unique=true)})
+     * @ORM\OneToMany(targetEntity="Days", mappedBy="schedule")
      */
     private $days;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="last_modified", type="datetime", options={"default": "CURRENT_TIMESTAMP"})
+     */
+    private $lastModified;
 
 //    /**
 //     * @var ArrayCollection
@@ -54,6 +58,8 @@ class Schedule
     public function __construct()
     {
         $this->days = new ArrayCollection();
+
+        $this->setLastModified(new \DateTime());
     }
 
     /**
@@ -94,6 +100,22 @@ class Schedule
     {
         $this->days[] = $day;
         return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getLastModified(): \DateTime
+    {
+        return $this->lastModified;
+    }
+
+    /**
+     * @param \DateTime $lastModified
+     */
+    public function setLastModified(\DateTime $lastModified): void
+    {
+        $this->lastModified = $lastModified;
     }
 
 

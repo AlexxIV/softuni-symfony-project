@@ -1,8 +1,8 @@
 {% extends 'base.html.twig' %}
 {% block main %}
-    <h2>LOGGED</h2>
-    {#{{ dump(app.user) }}#}
-    {#{{ dump(app.request) }}#}
-    {#{{ dump(app.session) }}#}
-    {#{{ dump(app.environment) }}#}
+    {% if (is_granted('ROLE_TEACHER')) %}
+        {% include 'teacher/index.html.twig' %}
+    {% else %}
+        {% include 'student/index.html.twig' %}
+    {% endif %}
 {% endblock %}

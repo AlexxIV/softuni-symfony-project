@@ -4,16 +4,20 @@ namespace SchoolDiaryBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\OneToMany;
+use Doctrine\ORM\Mapping\OneToOne;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * User
  *
- * @ORM\Table(name="user")
+ * @ORM\Table(name="app_users")
  * @ORM\Entity(repositoryClass="SchoolDiaryBundle\Repository\UserRepository")
  */
-class User implements UserInterface
+class User implements UserInterface, \Serializable
 {
     /**
      * @var int
@@ -73,29 +77,17 @@ class User implements UserInterface
      */
     private $personalID;
 
-
     /**
      * @var ArrayCollection
      *
      * @ORM\ManyToMany(targetEntity="Role", inversedBy="users")
      *
-     * @ORM\JoinTable(name="users_roles",
-     *     joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
-     *     inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="id")}
-     *   )
+     * @ORM\JoinTable(name="users_roles")
      */
     private $roles;
 
     /**
-     * @var bool
-     */
-    private $isTeacher;
-
-    /**
-     * @var SchoolClass
-     *
-     * @ORM\OneToOne(targetEntity="SchoolClass", inversedBy="teacher")
-     * @ORM\JoinColumn(name="teacher_class_id", referencedColumnName="id", nullable=true)
+     * @OneToOne(targetEntity="SchoolClass", mappedBy="teacher")
      */
     private $teacherClass;
 
@@ -103,24 +95,9 @@ class User implements UserInterface
      * @var SchoolClass
      *
      * @ORM\ManyToOne(targetEntity="SchoolClass", inversedBy="students")
-     * @ORM\JoinColumn(name="school_class_id", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumn(name="student_class", referencedColumnName="id")
      */
     private $studentClass;
-
-    /**
-     * @var string;
-     *
-     * @ORM\Column(name="grade", type="string", nullable=true)
-     *
-     * * @Assert\Range(
-     *      min = 1,
-     *      max = 12,
-     *      minMessage = "Please select graden in range [1-12]",
-     *      maxMessage = "Please select graden in range [1-12]"
-     * )
-     */
-
-    private $grade;
 
     /**
      * @var ArrayCollection
@@ -149,6 +126,14 @@ class User implements UserInterface
      */
     private $image;
 
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="confirmed", type="boolean")
+     */
+    private $confirmed;
+
+
     public function __construct()
     {
         $this->roles = new ArrayCollection();
@@ -169,6 +154,16 @@ class User implements UserInterface
     }
 
     /**
+     * Get email
+     *
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
      * Set email
      *
      * @param string $email
@@ -183,16 +178,6 @@ class User implements UserInterface
     }
 
     /**
-     * Get email
-     *
-     * @return string
-     */
-    public function getEmail()
-    {
-        return $this->email;
-    }
-
-    /**
      * Return the username used to authenticate the user.
      *
      * @return string The username
@@ -200,6 +185,16 @@ class User implements UserInterface
     public function getUsername()
     {
         return $this->email;
+    }
+
+    /**
+     * Get password
+     *
+     * @return string
+     */
+    public function getPassword()
+    {
+        return $this->password;
     }
 
     /**
@@ -214,16 +209,6 @@ class User implements UserInterface
         $this->password = $password;
 
         return $this;
-    }
-
-    /**
-     * Get password
-     *
-     * @return string
-     */
-    public function getPassword()
-    {
-        return $this->password;
     }
 
     /**
@@ -286,67 +271,14 @@ class User implements UserInterface
         return $stringRoles;
     }
 
-    public function getIsTeacher()
-    {
-        return $this->isTeacher;
-    }
-
-    public function setIsTeacher(bool $isTeacher): void
-    {
-        $this->isTeacher = $isTeacher;
-    }
-
     public function addRole(Role $role)
     {
         $this->roles[] = $role;
         return $this;
     }
 
-    public function addGrade(PersonalGrades $grade) {
-        $this->personalGrades[] = $grade;
-        return $this;
-    }
-
-    public function addAbsence(Absences $absence) {
-        $this->absences[] = $absence;
-        return $this;
-    }
-
-    public function isAdmin()
-    {
-        return in_array("ROLE_ADMIN", $this->getRoles());
-    }
-
-    public function isTeacher()
-    {
-        return in_array("ROLE_TEACHER", $this->getRoles());
-    }
-
     /**
-     * Returns the salt that was originally used to encode the password.
-     *
-     * This can return null if the password was not encoded using a salt.
-     *
-     * @return string|null The salt
-     */
-    public function getSalt()
-    {
-        // TODO: Implement getSalt() method.
-    }
-
-    /**
-     * Removes sensitive data from the user.
-     *
-     * This is important if, at any given point, sensitive information like
-     * the plain-text password is stored on this object.
-     */
-    public function eraseCredentials()
-    {
-        // TODO: Implement eraseCredentials() method.
-    }
-
-    /**
-     * @return SchoolClass
+     * @return mixed
      */
     public function getTeacherClass()
     {
@@ -354,17 +286,19 @@ class User implements UserInterface
     }
 
     /**
-     * @param SchoolClass $teacherClass
+     * @param mixed $teacherClass
      */
-    public function setTeacherClass(SchoolClass $teacherClass): void
+    public function setTeacherClass($teacherClass): void
     {
         $this->teacherClass = $teacherClass;
     }
 
+
+
     /**
      * @return SchoolClass
      */
-    public function getStudentClass()
+    public function getStudentClass(): ?SchoolClass
     {
         return $this->studentClass;
     }
@@ -374,33 +308,27 @@ class User implements UserInterface
         $this->studentClass = $studentClass;
     }
 
-    /**
-     * @return string
-     */
-    public function getGrade()
-    {
-        return $this->grade;
-    }
-
-    /**
-     * @param string $grade
-     */
-    public function setGrade(string $grade): void
-    {
-        $this->grade = $grade;
-    }
-
     public function getPersonalGrades()
     {
         return $this->personalGrades;
     }
 
+    public function addPersonalGrade(PersonalGrades $grade) {
+        $this->personalGrades[] = $grade;
+        return $this;
+    }
+
     /**
-     * @param ArrayCollection $personalGrades
+     * @return ArrayCollection
      */
-    public function setPersonalGrades(ArrayCollection $personalGrades): void
+    public function getAbsences()
     {
-        $this->personalGrades = $personalGrades;
+        return $this->absences;
+    }
+
+    public function addAbsence(Absences $absence) {
+        $this->absences[] = $absence;
+        return $this;
     }
 
     /**
@@ -420,23 +348,83 @@ class User implements UserInterface
     }
 
     /**
-     * @return ArrayCollection
+     * @return bool
      */
-    public function getAbsences()
+    public function isConfirmed(): bool
     {
-        return $this->absences;
+        return $this->confirmed;
     }
 
     /**
-     * @param ArrayCollection $absences
+     * @param bool $confirmed
      */
-    public function setAbsences(ArrayCollection $absences): void
+    public function setConfirmed(bool $confirmed): void
     {
-        $this->absences = $absences;
+        $this->confirmed = $confirmed;
     }
 
 
+    public function isAdmin(): bool
+    {
+        return \in_array('ROLE_ADMIN', $this->getRoles(), true);
+    }
+
+    public function isTeacher(): bool
+    {
+        return \in_array('ROLE_TEACHER', $this->getRoles(), true);
+    }
+
+    public function isStudent(): bool
+    {
+        return \in_array('ROLE_USER', $this->getRoles(), true);
+    }
+
+    /** @see \Serializable::serialize() */
+    public function serialize()
+    {
+        return serialize(array(
+            $this->id,
+            $this->email,
+            $this->password,
+            // see section on salt below
+            // $this->salt,
+        ));
+    }
+
+    /** @see \Serializable::unserialize() */
+    public function unserialize($serialized)
+    {
+        list (
+            $this->id,
+            $this->email,
+            $this->password,
+            // see section on salt below
+            // $this->salt
+            ) = unserialize($serialized, array('allowed_classes' => false));
+    }
 
 
+    /**
+     * Returns the salt that was originally used to encode the password.
+     *
+     * This can return null if the password was not encoded using a salt.
+     *
+     * @return string|null The salt
+     */
+    public function getSalt()
+    {
+        return null;
+    }
+
+    /**
+     * Removes sensitive data from the user.
+     *
+     * This is important if, at any given point, sensitive information like
+     * the plain-text password is stored on this object.
+     */
+    public function eraseCredentials()
+    {
+        return null;
+    }
 }
 

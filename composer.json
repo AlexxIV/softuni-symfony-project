@@ -36,7 +36,8 @@
         "symfony/symfony": "3.4.*",
         "symfony/var-dumper": "3.4.*",
         "symfony/webpack-encore-bundle": "^1.0",
-        "twig/twig": "^1.0||^2.0"
+        "twig/twig": "^1.0||^2.0",
+        "ext-pdo": "*"
     },
     "require-dev": {
     },

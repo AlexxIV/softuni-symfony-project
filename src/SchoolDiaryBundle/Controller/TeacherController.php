@@ -2,167 +2,84 @@
 
 namespace SchoolDiaryBundle\Controller;
 
+use Doctrine\ORM\EntityRepository;
 use SchoolDiaryBundle\Entity\Absences;
 use SchoolDiaryBundle\Entity\Days;
 use SchoolDiaryBundle\Entity\PersonalGrades;
 use SchoolDiaryBundle\Entity\Schedule;
 use SchoolDiaryBundle\Entity\SchoolClass;
 use SchoolDiaryBundle\Entity\User;
+use SchoolDiaryBundle\Form\SelectClass;
 use SchoolDiaryBundle\helpers\StatisticsHelper;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class TeacherController extends Controller
 {
     private const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
     /**
-     * @Route("/teacher", name="teacher_home")
-     */
-    public function indexAction()
-    {
-        /**
-         * @var User $user
-         */
-        $user = $this->getUser();
-
-        if (null === $user->getTeacherClass()) {
-            $schoolClassesWithoutTeacher = $this
-                ->getDoctrine()
-                ->getRepository(SchoolClass::class)
-                ->findBy(['teacher' => null]);
-
-            return $this->render('teacher/index.html.twig', array(
-                'emptyClasses' => $schoolClassesWithoutTeacher,
-            ));
-        }
-
-        /**
-         * @var SchoolClass $teacherClass
-         */
-        $teacherClass = $this
-            ->getDoctrine()
-            ->getRepository(SchoolClass::class)
-            ->find($user->getTeacherClass());
-
-        $unsubscribedStudents = $this
-            ->getDoctrine()
-            ->getRepository(User::class)
-            ->findBy(['studentClass' => null, 'grade' => $teacherClass->getName()]);
-
-        // School Grades
-        $allGrades = $this
-            ->getDoctrine()
-            ->getRepository(PersonalGrades::class)
-            ->findAll();
-
-        $allGradesAverage = [];
-        foreach ($allGrades as $grade) {
-            $allGradesAverage[] = $grade->getValue();
-        }
-
-        // School Absences
-        $allUsers = $this
-            ->getDoctrine()
-            ->getRepository(User::class)
-            ->findAll();
-
-        $absencesByUser = [];
-        foreach ($allUsers as $user) {
-            if (in_array('ROLE_TEACHER', $user->getRoles())) {
-                continue;
-            }
-            $absencesByUser[] = count($user->getAbsences());
-        }
-
-        // My Class Grades
-        $user = $this->getUser();
-
-        $allMyClassGrades = $this
-            ->getDoctrine()
-            ->getRepository(PersonalGrades::class)
-            ->getGradesForClass($user->getTeacherClass()->getId());
-
-        $myClassAverageGrades = [];
-
-        foreach ($allMyClassGrades as $grade) {
-            $myClassAverageGrades[] = $grade->getValue();
-        }
-
-        // My Class Absences
-
-        $allStudentsFromMyClass = $this
-            ->getDoctrine()
-            ->getRepository(User::class)
-            ->findBy(['studentClass' => $user->getTeacherClass()->getId()]);
-
-        $myClassMedianAbsences = [];
-        foreach ($allStudentsFromMyClass as $user) {
-            if (in_array('ROLE_TEACHER', $user->getRoles())) {
-                continue;
-            }
-            $myClassMedianAbsences[] = count($user->getAbsences());
-        }
-
-        return $this->render('teacher/index.html.twig', array(
-            'unsubscribedStudents' => $unsubscribedStudents,
-            'allGradesAverage' => StatisticsHelper::calculate_average($allGradesAverage),
-            'allAbsencesMedian' => StatisticsHelper::calculate_median($absencesByUser),
-            'myClassAllAverageGrades' => StatisticsHelper::calculate_average($myClassAverageGrades),
-            'myClassMedianAbsences' => StatisticsHelper::calculate_median($myClassMedianAbsences)
-        ));
-    }
-
-    /**
      * @Route("/teacher/subscribe/{id}", name="teacher_subscribe")
+     * @param UserInterface $user
      * @param $id
-     * @return RedirectResponse
+     * @return RedirectResponse|Response
      */
-    public function subscribeAction($id)
+    public function subscribeAction(UserInterface $user, $id)
     {
-        /**
-         *
-         * @var SchoolClass $schoolClass
-         * @var User $user
-         *
-         */
-
-        $user = $this
-                ->getDoctrine()
-                ->getRepository(User::class)
-                ->find($this->getUser()->getId());
-
-        $schoolClass = $this
+        /** @var User $user */
+        $teacherClass = $this
             ->getDoctrine()
             ->getRepository(SchoolClass::class)
             ->find($id);
 
+        if (
+            null !== $teacherClass &&
+            null === $teacherClass->getTeacher() &&
+            null === $user->getTeacherClass()
+        ) {
+            $em = $this
+                ->getDoctrine()
+                ->getManager();
 
 
-        if (null !== $schoolClass && null !== $user) {
+            $user->setTeacherClass($teacherClass);
+            $teacherClass->setTeacher($user);
+            $teacherClass->setIsLocked(true);
 
-            if (
-                null === $schoolClass->getTeacher() &&
-                null === $user->getTeacherClass()
-            ) {
-                $em = $this->getDoctrine()->getManager();
+            if (null === $teacherClass->getSchedule()) {
+                $schedule = new Schedule();
+                foreach (self::DAYS as $singleDay) {
+                    $day = new Days();
+                    $day->setDay($singleDay);
+                    $day->setSchedule($schedule);
 
-                $schoolClass->setTeacher($user);
-                $user->setTeacherClass($schoolClass);
-                
-                $em->flush();
+                    $em->persist($day);
 
-                $this->addFlash('success', 'Successfully selected class!');
-                return $this->redirectToRoute('teacher_home');
+                    $schedule->addDay($day);
+                }
+                $schedule->setSchoolClass($teacherClass);
+                $teacherClass->setSchedule($schedule);
+
+                $em->persist($schedule);
             }
+
+            $em->persist($user);
+            $em->persist($teacherClass);
+            $em->flush();
+
+            $this->addFlash('success', 'Successfully selected class!');
+            return $this->redirectToRoute('homepage');
         }
 
-        $this->addFlash('danger', 'An error occurred');
-        return $this->redirectToRoute('teacher_home');
+        $this->addFlash('danger', 'Error selecting class, please try again later');
+        return $this->redirectToRoute('homepage');
     }
 
     /**
@@ -177,28 +94,27 @@ class TeacherController extends Controller
             ->getRepository(User::class)
             ->find($id);
 
-        if (null !== $student->getStudentClass()) {
-            $this->addFlash('warning', 'The students is already registered!');
+        if (null === $student->getStudentClass()) {
+            $this->addFlash('warning', 'The students does not have a class assigned!');
             $this->redirectToRoute('teacher_home');
         }
 
-        $currentClass = $this
-            ->getDoctrine()
-            ->getRepository(SchoolClass::class)
-            ->findOneBy(['teacher' => $this->getUser()->getId()]);
+        if (true === $student->isConfirmed()) {
+            $this->addFlash('info', 'The student is already registered!');
+            $this->redirectToRoute('teacher_home');
+        }
 
         $em = $this
             ->getDoctrine()
             ->getManager();
 
-        $student->setStudentClass($currentClass);
+        $student->setConfirmed(true);
 
         $em->persist($student);
         $em->flush();
 
         $this->addFlash('success', 'Student registered successfully!');
         return $this->redirectToRoute('teacher_students_list');
-
     }
 
     /**
@@ -213,7 +129,7 @@ class TeacherController extends Controller
             ->getRepository(User::class)
             ->find($id);
 
-        if (null === $student->getStudentClass()) {
+        if (null === $student->getStudentClass() || false === $student->isConfirmed()) {
             $this->addFlash('info', 'The students is not registered!');
             $this->redirectToRoute('teacher_students_list');
         }
@@ -222,7 +138,7 @@ class TeacherController extends Controller
             ->getDoctrine()
             ->getManager();
 
-        $student->setStudentClass(null);
+        $student->setConfirmed(false);
 
         $em->persist($student);
         $em->flush();
@@ -257,36 +173,31 @@ class TeacherController extends Controller
      * @Route("/teacher/students", name="teacher_students_list")
      *
      */
-    public function studentsListAction()
+    public function studentsListAction(UserInterface $user)
     {
         /**
          * @var User $user
-         */
-        $user = $this->getUser();
-
-        /**
          * @var SchoolClass $teacherClass
+         * @var User $student
          */
-        $teacherClass = $this
-            ->getDoctrine()
-            ->getRepository(SchoolClass::class)
-            ->find($user->getTeacherClass());
 
-        $students = $this
-            ->getDoctrine()
-            ->getRepository(User::class)
-            ->findBy(['studentClass' => $teacherClass->getId()]);
+        $teacherClass = $user->getTeacherClass();
+        $students = $teacherClass->getStudents();
 
-        $unsubscribedStudents = $this
-            ->getDoctrine()
-            ->getRepository(User::class)
-            ->findBy(['studentClass' => null, 'grade' => $teacherClass->getName()]);
-
+        $unconfirmedStudents = [];
+        $confirmedStudents = [];
+        foreach ($students as $student) {
+            if (!$student->isConfirmed()) {
+                $unconfirmedStudents[] = $student;
+            } else {
+                $confirmedStudents[] = $student;
+            }
+        }
 
         return $this->render('teacher/students-list.html.twig', array(
-            'students' => $students,
+            'confirmedStudents' => $confirmedStudents,
             'teacherClass' => $teacherClass,
-            'unsubscribedStudents' => $unsubscribedStudents
+            'uncofirmedStudents' => $unconfirmedStudents
         ));
     }
 }

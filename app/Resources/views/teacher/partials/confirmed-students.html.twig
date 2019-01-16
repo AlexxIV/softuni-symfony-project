@@ -1,0 +1,32 @@
+<div class="row">
+    <div class="col-10 offset-1 mt-5 mb-5">
+        <div class="custom-table-temlate">
+            <div class="header">Registered Students</div>
+            <table cellspacing="0">
+                <tr>
+                    <th>Picture</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
+                    <th>Personal ID</th>
+                    <th>Actions</th>
+                </tr>
+                {% for student in confirmedStudents %}
+                    <tr>
+                        <td><img src="{{ asset('uploads/images/' ~ student.image) }}" alt=""></td>
+                        <td>{{ student.firstName }}</td>
+                        <td>{{ student.lastName }}</td>
+                        <td>{{ student.email }}</td>
+                        <td>{{ student.personalId }}</td>
+                        <td class="text-center">
+                            <a href="{{ path('teacher_details', {'id': student.id}) }}"
+                               class="btn-success btn">Details</a>
+                            <a href="{{ path('teacher_remove_student', {'id': student.id}) }}"
+                               class="btn-danger btn">Remove</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>

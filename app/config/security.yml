@@ -13,13 +13,15 @@ security:
         secured_area:
             # this firewall applies to all URLs
             pattern: ^/
-
+            http_basic: ~
             anonymous: true
 
             form_login:
                 check_path: security_login
 
                 login_path: security_login
+
+                default_target_path: homepage
 
                 always_use_default_target_path: true
 
@@ -35,9 +37,9 @@ security:
         - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register$, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/admin/create$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-#        - { path: ^/admin$, role: ROLE_ADMIN }
-#        - { path: ^/teacher$, role: ROLE_TEACHER }
-#        - { path: ^/, role: ROLE_USER }
+        - { path: ^/admin$, role: ROLE_ADMIN }
+        - { path: ^/teacher$, role: ROLE_TEACHER }
+        - { path: ^/, role: ROLE_USER }
 
 
     role_hierarchy:

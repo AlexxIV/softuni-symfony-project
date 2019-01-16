@@ -34,8 +34,8 @@ exports.default = (() => {
     $('#student-register').on('click', function () {
 
         let regForm = $('#register-form');
-        regForm.find('#user_grade').parent().show();
-        regForm.find('#user_isTeacher').val(0);
+        regForm.find('#user_studentClass').parent().show();
+        regForm.find('#user_registerTeacher').val(0);
         regForm.fadeIn();
 
         let teacherBtn = $('#teacher-register');
@@ -50,8 +50,8 @@ exports.default = (() => {
 
     $('#teacher-register').on('click', function () {
         let regForm = $('#register-form');
-        regForm.find('#user_grade').parent().hide();
-        regForm.find('#user_isTeacher').val(1);
+        regForm.find('#user_studentClass').val('').parent().hide();
+        regForm.find('#user_registerTeacher').val(1);
         regForm.fadeIn();
 
         let studentBtn = $('#student-register');

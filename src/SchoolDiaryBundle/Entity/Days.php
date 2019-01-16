@@ -2,6 +2,7 @@
 
 namespace SchoolDiaryBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -24,8 +25,8 @@ class Days
     /**
      * @var Schedule
      *
-     * @ORM\ManyToMany(targetEntity="Schedule", mappedBy="days")
-     *
+     * @ORM\ManyToOne(targetEntity="Schedule", inversedBy="days")
+     * @ORM\JoinColumn(name="schedule_id", referencedColumnName="id")
      */
     private $schedule;
 
@@ -36,40 +37,15 @@ class Days
     private $day;
 
     /**
-     * @var string
-     * @ORM\Column(name="first", type="string", nullable=true)
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="DayRecord", mappedBy="day")
      */
-    private $first;
-    /**
-     * @var string
-     * @ORM\Column(name="second", type="string", nullable=true)
-     */
-    private $second;
-    /**
-     * @var string
-     * @ORM\Column(name="third", type="string", nullable=true)
-     */
-    private $third;
-    /**
-     * @var string
-     * @ORM\Column(name="fourth", type="string", nullable=true)
-     */
-    private $fourth;
-    /**
-     * @var string
-     * @ORM\Column(name="fifth", type="string", nullable=true)
-     */
-    private $fifth;
-    /**
-     * @var string
-     * @ORM\Column(name="sixth", type="string", nullable=true)
-     */
-    private $sixth;
-    /**
-     * @var string
-     * @ORM\Column(name="seventh", type="string", nullable=true)
-     */
-    private $seventh;
+    private $records;
+
+    public function __construct()
+    {
+        $this->records = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -113,118 +89,20 @@ class Days
         $this->day = $day;
     }
 
-    /**
-     * @return string
-     */
-    public function getFirst()
+    public function getRecords()
     {
-        return $this->first;
+        return $this->records;
     }
 
     /**
-     * @param string $first
+     * @param ArrayCollection $records
+     * @return Days
      */
-    public function setFirst(string $first): void
+    public function addRecord(DayRecord $record): Days
     {
-        $this->first = $first;
+        $this->records[] = $record;
+        return $this;
     }
-
-    /**
-     * @return string
-     */
-    public function getSecond()
-    {
-        return $this->second;
-    }
-
-    /**
-     * @param string $second
-     */
-    public function setSecond(string $second): void
-    {
-        $this->second = $second;
-    }
-
-    /**
-     * @return string
-     */
-    public function getThird()
-    {
-        return $this->third;
-    }
-
-    /**
-     * @param string $third
-     */
-    public function setThird(string $third): void
-    {
-        $this->third = $third;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFourth()
-    {
-        return $this->fourth;
-    }
-
-    /**
-     * @param string $fourth
-     */
-    public function setFourth(string $fourth): void
-    {
-        $this->fourth = $fourth;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFifth()
-    {
-        return $this->fifth;
-    }
-
-    /**
-     * @param string $fifth
-     */
-    public function setFifth(string $fifth): void
-    {
-        $this->fifth = $fifth;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSixth()
-    {
-        return $this->sixth;
-    }
-
-    /**
-     * @param string $sixth
-     */
-    public function setSixth(string $sixth): void
-    {
-        $this->sixth = $sixth;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSeventh()
-    {
-        return $this->seventh;
-    }
-
-    /**
-     * @param string $seventh
-     */
-    public function setSeventh(string $seventh): void
-    {
-        $this->seventh = $seventh;
-    }
-
 
 }
 

@@ -5,8 +5,10 @@ namespace SchoolDiaryBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\OneToOne;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * SchoolClass
@@ -26,16 +28,29 @@ class SchoolClass
     private $id;
 
     /**
-     * @var string
-     * @ORM\Column(name="name", type="string", unique=true)
+     * @var int;
+     *
+     * @ORM\Column(name="class_number_identifier", type="integer", nullable=false)
+     *
+     * * @Assert\Range(
+     *      min = 1,
+     *      max = 12,
+     *      minMessage = "Please select graden in range [1-12]",
+     *      maxMessage = "Please select graden in range [1-12]"
+     * )
      */
-    private $name;
+    private $classNumberIdentifier;
 
     /**
-     * @var User
+     * @var string
      *
-     * @OneToOne(targetEntity="User", mappedBy="teacherClass")
-     * @JoinColumn(name="teacher", referencedColumnName="id")
+     * @ORM\Column(name="class_letter_identifier", type="string", nullable=false, length=1)
+     */
+    private $classLetterIdentifier;
+
+    /**
+     * @OneToOne(targetEntity="User", inversedBy="teacherClass")
+     * @JoinColumn(name="teacher_id", referencedColumnName="id")
      */
     private $teacher;
 
@@ -46,6 +61,13 @@ class SchoolClass
      *
      */
     private $students;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_locked", type="boolean")
+     */
+    private $isLocked;
 
     /**
      * @var Schedule
@@ -66,29 +88,45 @@ class SchoolClass
      *
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
     /**
+     * @return int
+     */
+    public function getClassNumberIdentifier(): int
+    {
+        return $this->classNumberIdentifier;
+    }
+
+    /**
+     * @param int $classNumberIdentifier
+     */
+    public function setClassNumberIdentifier(int $classNumberIdentifier): void
+    {
+        $this->classNumberIdentifier = $classNumberIdentifier;
+    }
+
+    /**
      * @return string
      */
-    public function getName()
+    public function getClassLetterIdentifier(): string
     {
-        return $this->name;
+        return $this->classLetterIdentifier;
     }
 
     /**
-     * @param string $name
+     * @param string $classLetterIdentifier
      */
-    public function setName(string $name): void
+    public function setClassLetterIdentifier(string $classLetterIdentifier): void
     {
-        $this->name = $name;
+        $this->classLetterIdentifier = $classLetterIdentifier;
     }
 
     /**
-     * @return User
+     * @return mixed
      */
     public function getTeacher()
     {
@@ -96,27 +134,43 @@ class SchoolClass
     }
 
     /**
-     * @param User $teacher
+     * @param mixed $teacher
      */
-    public function setTeacher(User $teacher): void
+    public function setTeacher($teacher): void
     {
         $this->teacher = $teacher;
     }
 
-    /**
-     * @return ArrayCollection
-     */
     public function getStudents()
     {
         return $this->students;
     }
 
-    /**
-     * @param ArrayCollection $students
-     */
-    public function setStudents(ArrayCollection $students): void
+    public function addStudent(User $student)
     {
-        $this->students = $students;
+        $this->students[] = $student;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLocked(): bool
+    {
+        return $this->isLocked;
+    }
+
+    /**
+     * @param bool $isLocked
+     */
+    public function setIsLocked(bool $isLocked): void
+    {
+        $this->isLocked = $isLocked;
+    }
+
+    public function getGradeForSelect()
+    {
+        return $this->getClassNumberIdentifier() . $this->getClassLetterIdentifier();
     }
 
     /**

@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class ScheduleController extends Controller
 {
@@ -18,29 +19,22 @@ class ScheduleController extends Controller
      * @Route("/student/schedule", name="student_schedule")
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function studentScheduleAction()
+    public function studentScheduleAction(UserInterface $user)
     {
         /**
          * @var User $user;
          */
-        $user = $this->getUser();
-        if (null !== $user->getStudentClass()) {
-            $scheduleId = $user
-                ->getStudentClass()
-                ->getSchedule();
 
-            $schedule = $this
-                ->getDoctrine()
-                ->getRepository(Schedule::class)
-                ->find($scheduleId);
-
+        if (null !== $user->getStudentClass() && true === $user->isConfirmed()) {
+            $class = $user->getStudentClass();
+            $schedule = $class->getSchedule();
             $days = $schedule->getDays();
 
-            return $this->render('student/schedule.html.twig', array(
+            return $this->render('schedule/index.html.twig', array(
                 'days' => $days
             ));
         }
-        return $this->render('student/schedule.html.twig');
+        return $this->render('schedule/index.html.twig');
 
 
     }
@@ -49,19 +43,27 @@ class ScheduleController extends Controller
      * @Route("/teacher/schedule", name="teacher_schedule")
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function teacherScheduleAction()
+    public function teacherScheduleAction(UserInterface $user)
     {
         /**
          * @var User $user;
+         *
+         * @var SchoolClass $teacherClass;
+         *
          */
-        $user = $this->getUser();
         $teacherClass = $user->getTeacherClass();
 
-        $schedule = $teacherClass
-            ->getSchedule();
+        /**
+         * @var Schedule $schedule;
+         */
+        $schedule = $teacherClass->getSchedule();
+
+        /**
+         * @var Days[] $days
+         */
         $days = $schedule->getDays();
 
-        return $this->render('teacher/schedule.html.twig', array(
+        return $this->render('schedule/index.html.twig', array(
             'days' => $days
         ));
     }

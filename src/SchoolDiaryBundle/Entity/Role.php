@@ -4,6 +4,7 @@ namespace SchoolDiaryBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\ManyToMany;
 
 /**
  * Role
@@ -32,7 +33,7 @@ class Role
     /**
      * @var ArrayCollection
      *
-     * @ORM\ManyToMany(targetEntity="User", mappedBy="roles")
+     * @ManyToMany(targetEntity="User", mappedBy="roles")
      */
     private $users;
 
@@ -40,7 +41,6 @@ class Role
     {
         $this->users = new ArrayCollection();
     }
-
 
     /**
      * Get id
