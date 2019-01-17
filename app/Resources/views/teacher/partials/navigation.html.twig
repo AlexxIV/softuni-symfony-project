@@ -1,0 +1,18 @@
+{% if app.user.teacherClass is null %}
+    <li class="nav-item {% if app.request.attributes.get('_route') == 'homepage' %}active{% endif %}">
+        <a class="nav-link"
+           href="{{ path('homepage') }}"
+        >Select Class</a>
+    </li>
+{% else %}
+    <li class="nav-item {% if app.request.attributes.get('_route') == 'teacher_students_list' %}active{% endif %}">
+        <a class="nav-link"
+           href="{{ path('teacher_students_list') }}"
+        >My Class</a>
+    </li>
+    <li class="nav-item {% if app.request.attributes.get('_route') == 'teacher_schedule' %}active{% endif %}">
+        <a class="nav-link"
+           href="{{ path('teacher_schedule') }}"
+        >Weekly Schedule</a>
+    </li>
+{% endif %}

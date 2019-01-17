@@ -1,0 +1,11 @@
+<li class="mr-5 nav-item {% if app.request.attributes.get('_route') == 'user_profile' %}active{% endif %}">
+    <a class="nav-link" href="{{ path('user_profile') }}">My Profile</a>
+</li>
+<li class="nav-item ml-md-5">
+                    <span class="nav-link active cursor-d font-italic">
+                        Welcome {{ app.user.firstName }} {{ app.user.lastName }} !
+                    </span>
+</li>
+<li class="nav-item {% if app.request.attributes.get('_route') == 'security_logout' %}active{% endif %}">
+    <a class="nav-link" href="{{ path('security_logout') }}">Logout</a>
+</li>

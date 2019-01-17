@@ -5,6 +5,9 @@
         <div class="col-sm-6 offset-sm-3">
             <h2 class="p-3">My profile: </h2>
             <div class="user-profile p-3">
+                <div class="form-group text-center profile-image-wrapper">
+                    <img class="profile-image" src="{{ user.image|cloudinary_url({"width" : 150, "height" : 150, "radius" : 50, "secure" : true}) }}" alt="">
+                </div>
                 <div class="form-group">
                     <label for="user_email">Email</label>
                     <input type="text" id="user_email" class="form-control" value="{{ user.email }}" disabled="disabled">

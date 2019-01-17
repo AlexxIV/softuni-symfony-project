@@ -75,3 +75,8 @@ sensio_framework_extra:
 
 webpack_encore:
     output_path: "%kernel.root_dir%/../web/build"
+
+misteio_cloudinary:
+    cloud_name: schooldiarycloud
+    api_key: 115592954993875
+    secret_key: fFRKOONade0j5UpKX2KoJMDn4ig

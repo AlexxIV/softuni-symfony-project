@@ -2,6 +2,7 @@
 
 namespace SchoolDiaryBundle\Controller;
 
+use Misteio\CloudinaryBundle\MisteioCloudinaryBundle;
 use SchoolDiaryBundle\Entity\Days;
 use SchoolDiaryBundle\Entity\Role;
 use SchoolDiaryBundle\Entity\Schedule;
@@ -69,17 +70,25 @@ class UserController extends Controller
             /** @var UploadedFile $file */
             $file = $form->getData()->getImage();
 
-            $fileName = md5(uniqid('', true)) . '.' . $file->guessExtension();
+            $fileName = md5(uniqid('', true)); //. '.' . $file->guessExtension();
 
-            try {
-                $file->move($this->getParameter('images_directory'),
-                    $fileName);
-            } catch (FileException $ex) {
-                $this->addFlash('danger', 'Image upload failed');
-                return $this->render('user/register.html.twig');
-            }
+            $fileFolder = $form->getData()->getFirstName() . $form->getData()->getLastName();
 
-            $user->setImage($fileName);
+            $cloudinary = $this->get('misteio_cloudinary_wrapper');
+
+            $publicId = $fileFolder . '/' . $fileName;
+
+            $cloudinary->upload($file, $publicId);
+
+//            try {
+//                $file->move($this->getParameter('images_directory'),
+//                    $fileName);
+//            } catch (FileException $ex) {
+//                $this->addFlash('danger', 'Image upload failed');
+//                return $this->render('user/register.html.twig');
+//            }
+
+            $user->setImage($publicId);
             $password = $this->get('security.password_encoder')
                 ->encodePassword($user, $user->getPassword());
 
@@ -180,16 +189,7 @@ class UserController extends Controller
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function profile(Request $request){
-//        $userId = $this->getUser()->getId();
-//
-//        $user = $this
-//            ->getDoctrine()
-//            ->getRepository(User::class)
-//            ->find($userId);
-
-        $user = $this->getUser();
-
+    public function profile(UserInterface $user, Request $request){
         $form = $this->createFormBuilder()
             ->add('oldPassword', PasswordType::class, array(
                 'constraints' => array(
@@ -209,25 +209,6 @@ class UserController extends Controller
                     'invalid_message' => 'The passwords should match!'
                 ))
             ->getForm();
-
-//        $form->handleRequest($request);
-
-//        if ($form->isSubmitted()) {
-//
-////            $oldPassword = $form->getData()->getOldPassword();
-////
-////            $oldPassword = $this->get('security.password_encoder')
-////                ->encodePassword($user, $oldPassword);
-////
-////            var_dump($oldPassword);
-////
-////            var_dump($user->getPassword());
-////
-////            var_dump($user);
-//            var_dump($form->getData()->getOldPassword);
-//            die;
-//
-//        }
 
         if ($request->isMethod('POST')) {
             $form->submit($request->request->get($form->getName()));

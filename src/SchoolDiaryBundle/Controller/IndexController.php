@@ -2,8 +2,8 @@
 
 namespace SchoolDiaryBundle\Controller;
 
-use Proxies\__CG__\SchoolDiaryBundle\Entity\SchoolClass;
 use SchoolDiaryBundle\Entity\PersonalGrades;
+use SchoolDiaryBundle\Entity\SchoolClass;
 use SchoolDiaryBundle\Entity\User;
 use SchoolDiaryBundle\helpers\StatisticsHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -47,10 +47,14 @@ class IndexController extends Controller
                     ->getRepository(SchoolClass::class)
                     ->findBy(['teacher' => null]);
 
-                return $this->render('common/index.html.twig', array(
-                    'emptyClasses' => $emptyClasses,
-                ));
+                if (null !== $emptyClasses) {
 
+                    return $this->render('common/index.html.twig', array(
+                        'emptyClasses' => $emptyClasses,
+                    ));
+                }
+
+                return $this->render('common/index.html.twig');
             }
 
             /**
