@@ -17,7 +17,8 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new SchoolDiaryBundle\SchoolDiaryBundle(),
-            new Symfony\WebpackEncoreBundle\WebpackEncoreBundle()
+            new Symfony\WebpackEncoreBundle\WebpackEncoreBundle(),
+            new \Misteio\CloudinaryBundle\MisteioCloudinaryBundle()
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {

@@ -22,9 +22,11 @@
     },
     "require": {
         "php": "^7.1.9",
+        "ext-pdo": "*",
         "doctrine/doctrine-bundle": "^1.6",
         "doctrine/orm": "^2.5",
         "incenteev/composer-parameter-handler": "^2.0",
+        "misteio/cloudinary-bundle": "^0.2.0",
         "sensio/distribution-bundle": "^5.0.19",
         "sensio/framework-extra-bundle": "^5.0.0",
         "sensio/generator-bundle": "^3.0",

@@ -4,6 +4,7 @@
     <div class="row">
         <div class="col-sm-6 offset-sm-3">
             <h2 class="p-3">My profile: </h2>
+            <img src="{{ user.image|cloudinary_url({"width" : 150, "height" : 150, "crop" : "fill", "radius" : 20, "secure" : true}) }}" alt="">
             <div class="user-profile p-3">
                 <div class="form-group">
                     <label for="user_email">Email</label>

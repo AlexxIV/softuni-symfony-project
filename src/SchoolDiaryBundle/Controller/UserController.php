@@ -2,6 +2,7 @@
 
 namespace SchoolDiaryBundle\Controller;
 
+use Misteio\CloudinaryBundle\MisteioCloudinaryBundle;
 use SchoolDiaryBundle\Entity\Days;
 use SchoolDiaryBundle\Entity\Role;
 use SchoolDiaryBundle\Entity\Schedule;
@@ -69,17 +70,25 @@ class UserController extends Controller
             /** @var UploadedFile $file */
             $file = $form->getData()->getImage();
 
-            $fileName = md5(uniqid('', true)) . '.' . $file->guessExtension();
+            $fileName = md5(uniqid('', true)); //. '.' . $file->guessExtension();
 
-            try {
-                $file->move($this->getParameter('images_directory'),
-                    $fileName);
-            } catch (FileException $ex) {
-                $this->addFlash('danger', 'Image upload failed');
-                return $this->render('user/register.html.twig');
-            }
+            $fileFolder = $form->getData()->getFirstName() . $form->getData()->getLastName();
 
-            $user->setImage($fileName);
+            $cloudinary = $this->get('misteio_cloudinary_wrapper');
+
+            $publicId = $fileFolder . '/' . $fileName;
+
+            $cloudinary->upload($file, $publicId);
+
+//            try {
+//                $file->move($this->getParameter('images_directory'),
+//                    $fileName);
+//            } catch (FileException $ex) {
+//                $this->addFlash('danger', 'Image upload failed');
+//                return $this->render('user/register.html.twig');
+//            }
+
+            $user->setImage($publicId);
             $password = $this->get('security.password_encoder')
                 ->encodePassword($user, $user->getPassword());
 
