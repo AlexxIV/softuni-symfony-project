@@ -9,6 +9,8 @@ import './ajax-crud';
 import './fe-animations';
 import './schedule';
 
+import './admin/animations';
+
 import '../css/main.scss';
 
 $("document").ready(function(){

@@ -142,47 +142,47 @@ class UserController extends Controller
     }
 
 
-    /**
-     * @Route("/admin/create", name="seed_admin")
-     */
-    public function registerAdminAction() {
-
-        $existingAdmin = $this
-            ->getDoctrine()
-            ->getRepository(User::class)
-            ->findOneBy(['email' => 'admin@admin.com']);
-
-        if (null !== $existingAdmin) {
-            $this->addFlash('info', 'Admin already seeded!');
-            return $this->redirectToRoute('security_login');
-        }
-
-        $admin = new User();
-
-        $admin->setEmail('admin@admin.com');
-        $admin->setPassword($this->get('security.password_encoder')
-            ->encodePassword($admin, 'admin'));
-        $admin->setFirstName('admin');
-        $admin->setLastName('admin');
-        $admin->setPersonalID('admin');
-
-        $roles = $this
-            ->getDoctrine()
-            ->getRepository(Role::class)
-            ->findAll();
-
-        foreach ($roles as $role) {
-            $admin->addRole($role);
-        }
-
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($admin);
-        $em->flush();
-
-        $this->addFlash('success', 'Admin successfully created!');
-
-        return $this->redirectToRoute('security_login');
-    }
+//    /**
+//     * @Route("/admin/create", name="seed_admin")
+//     */
+//    public function registerAdminAction() {
+//
+//        $existingAdmin = $this
+//            ->getDoctrine()
+//            ->getRepository(User::class)
+//            ->findOneBy(['email' => 'admin@admin.com']);
+//
+//        if (null !== $existingAdmin) {
+//            $this->addFlash('info', 'Admin already seeded!');
+//            return $this->redirectToRoute('security_login');
+//        }
+//
+//        $admin = new User();
+//
+//        $admin->setEmail('admin@admin.com');
+//        $admin->setPassword($this->get('security.password_encoder')
+//            ->encodePassword($admin, 'admin'));
+//        $admin->setFirstName('admin');
+//        $admin->setLastName('admin');
+//        $admin->setPersonalID('admin');
+//
+//        $roles = $this
+//            ->getDoctrine()
+//            ->getRepository(Role::class)
+//            ->findAll();
+//
+//        foreach ($roles as $role) {
+//            $admin->addRole($role);
+//        }
+//
+//        $em = $this->getDoctrine()->getManager();
+//        $em->persist($admin);
+//        $em->flush();
+//
+//        $this->addFlash('success', 'Admin successfully created!');
+//
+//        return $this->redirectToRoute('security_login');
+//    }
 
     /**
      * @Route("/profile", name="user_profile")

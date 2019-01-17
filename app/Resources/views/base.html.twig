@@ -12,6 +12,9 @@
     <body id="{% block body_id %}{% endblock %}">
         <div id="main-wrapper">
             {% include 'common/navbar.html.twig' %}
+            {% if app.user and is_granted('ROLE_ADMIN') %}
+                {% include 'admin/partials/navigation.html.twig' %}
+            {% endif %}
             {% for label, flashes in app.session.flashbag.all %}
                 {% for flash in flashes %}
                     <div class="text-center alert alert-{{ label }}">

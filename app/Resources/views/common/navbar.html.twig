@@ -8,33 +8,22 @@
 
         <div class="collapse navbar-collapse" id="navbarsExample03">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item {% if app.user %}
-                                        {% if ((is_granted('ROLE_ADMIN')) and (app.request.attributes.get('_route') == 'admin_home')) or
-                    ((is_granted('ROLE_TEACHER')) and (app.request.attributes.get('_route')) == 'teacher_home') or
-                    ((is_granted('ROLE_USER')) and (app.request.attributes.get('_route') == 'student_home')) %}active
-                                        {% endif %}
-                                    {% endif %}">
-                    <a class="nav-link" href="{{ path('homepage') }}{# if app.user %}
-                                                {% if (is_granted('ROLE_ADMIN')) %}
-                                                    {{ path('admin_home') }}
-                                                    {% elseif (is_granted('ROLE_TEACHER')) %}
-                                                    {{ path('teacher_home') }}
-                                                    {% elseif (is_granted('ROLE_USER')) %}
-                                                    {{ path('student_home') }}
-                                                    {% endif %}
-                                                    {% else %}
-                                                    {{ path('homepage') }}
-                                            {% endif #}"
+                {% if app.user and is_granted('ROLE_ADMIN') %}
+                    <button type="button" id="sidebarCollapse" class="btn btn-primary">
+                        <i class="fas fa-align-left"></i>
+                    </button>
+                {% else %}
+                <li class="nav-item {% if app.request.attributes.get('_route') == 'homepage' %}active{% endif %}">
+                    <a class="nav-link" href="{{ path('homepage') }}"
                     >Home</a>
                 </li>
+                {% endif %}
             </ul>
             <ul class="navbar-nav ml-auto">
                 {% if app.user %}
-                    {% if is_granted('ROLE_ADMIN') %}
-
-                    {% elseif is_granted('ROLE_TEACHER') and not is_granted('ROLE_ADMIN') %}
+                    {% if is_granted('ROLE_TEACHER') and not is_granted('ROLE_ADMIN') %}
                         {% include 'teacher/partials/navigation.html.twig' %}
-                    {% else %}
+                    {% elseif is_granted('ROLE_USER') and not is_granted('ROLE_TEACHER') and not is_granted('ROLE_ADMIN') %}
                         {% include 'student/partials/navigation.html.twig' %}
                     {% endif %}
                         {% include 'common/partials/auth-navigation.html.twig' %}
