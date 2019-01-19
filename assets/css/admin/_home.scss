@@ -1,7 +1,8 @@
 #admin {
   .admin-header {
-   background-color: #343a40 !important
+    background-color: #343a40 !important
   }
+
   #admin-wrapper {
     display: flex;
     width: 100%;
@@ -27,6 +28,10 @@
       ul.components {
         padding: 20px 0;
         border-bottom: 1px solid darken(#343a40, 20%);
+
+        > li:last-of-type {
+          margin-top: 2rem;
+        }
       }
 
       ul {

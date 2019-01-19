@@ -1,21 +1,24 @@
 <nav id="admin-sidebar" class="active">
     <div class="sidebar-header">
-        <h3>Bootstrap Sidebar</h3>
+        <h3>Control panel</h3>
     </div>
 
     <ul class="list-unstyled components">
-        <p>Dummy Heading</p>
-        <li class="active">
-            <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
+        <p>Welcome {{ app.user.firstName }} {{ app.user.lastName }} !</p>
+        <li class="{% if app.request.attributes.get('_route') == 'admin_home' %}active{% endif %}">
+            <a href="{{ path('admin_home') }}">Home</a>
+        </li>
+        <li>
+            <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Users</a>
             <ul class="collapse list-unstyled" id="homeSubmenu">
                 <li>
-                    <a href="#">Home 1</a>
+                    <a href="#">Students</a>
                 </li>
                 <li>
-                    <a href="#">Home 2</a>
+                    <a href="#">Teachers</a>
                 </li>
                 <li>
-                    <a href="#">Home 3</a>
+                    <a href="#">All Users</a>
                 </li>
             </ul>
         </li>
@@ -26,13 +29,13 @@
             <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Pages</a>
             <ul class="collapse list-unstyled" id="pageSubmenu">
                 <li>
-                    <a href="#">Page 1</a>
+                    <a href="#">Students</a>
                 </li>
                 <li>
-                    <a href="#">Page 2</a>
+                    <a href="#">Teachers</a>
                 </li>
                 <li>
-                    <a href="#">Page 3</a>
+                    <a href="#">All Users</a>
                 </li>
             </ul>
         </li>
@@ -40,7 +43,7 @@
             <a href="#">Portfolio</a>
         </li>
         <li>
-            <a href="#">Contact</a>
+            <a href="{{ path('security_logout') }}">Logout</a>
         </li>
     </ul>
 </nav>
