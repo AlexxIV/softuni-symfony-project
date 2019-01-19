@@ -1,0 +1,25 @@
+{#<li class="nav-item ml-md-5">#}
+                    {#<span class="nav-link active cursor-d font-italic">#}
+                        {#Welcome {{ app.user.firstName }} {{ app.user.lastName }} !#}
+                    {#</span>#}
+{#</li>#}
+{#<li class="nav-item {% if app.request.attributes.get('_route') == 'security_logout' %}active{% endif %}">#}
+    {#<a class="nav-link" href="{{ path('security_logout') }}">Logout</a>#}
+{#</li>#}
+
+
+
+
+{#{% if app.user and is_granted('ROLE_ADMIN') %}#}
+                    {#{% include 'admin/partials/navbar-toggle.html.twig' %}#}
+                {#{% else %}#}
+
+
+
+                    {#{% if is_granted('ROLE_ADMIN') %}#}
+                        {#{% include 'admin/partials/navigation-top.html.twig' %}#}
+<div class="admin-header">
+    <button type="button" id="sidebarCollapse" class="m-4 btn btn-primary">
+        <i class="fas fa-align-left"></i>
+    </button>
+</div>
