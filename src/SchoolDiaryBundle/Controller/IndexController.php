@@ -36,7 +36,7 @@ class IndexController extends Controller
     {
         /** @var User $user */
         if ($user->isAdmin()) {
-
+            return $this->redirectToRoute('admin_home');
         }
         if ($user->isTeacher()) {
             if (

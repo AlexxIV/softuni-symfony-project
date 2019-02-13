@@ -1,4 +1,9 @@
 {% extends 'base.html.twig' %}
-{% block main %}
-    <h2>Azis</h2>
+{% block admin %}
+    <div id="admin">
+        {% include 'admin/partials/navigation-top.html.twig' %}
+        <div id="admin-wrapper">
+            {% include 'admin/partials/navigation.html.twig' %}
+        </div>
+    </div>
 {% endblock %}

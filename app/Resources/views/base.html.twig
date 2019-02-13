@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{% block title %}SchoolBook{% endblock %}</title>
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
-        {% endblock %}
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
-    </head>
-    <body id="{% block body_id %}{% endblock %}">
-        <div id="main-wrapper">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}SchoolBook{% endblock %}</title>
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('app') }}
+    {% endblock %}
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
+</head>
+<body id="{% block body_id %}{% endblock %}">
+<div id="main-wrapper">
+    {% if is_granted('ROLE_ADMIN') %}
+        {% block admin %}{% endblock %}
+        {% else %}
             {% include 'common/navbar.html.twig' %}
             {% for label, flashes in app.session.flashbag.all %}
                 {% for flash in flashes %}
@@ -28,12 +31,13 @@
                     </div>
                 </div>
             {% endblock %}
-            {% block javascripts %}
-                {{ encore_entry_script_tags('app') }}
-            {% endblock %}
             {% include 'common/footer.html.twig' %}
-        </div>
-    </body>
+    {% endif %}
+</div>
+{% block javascripts %}
+    {{ encore_entry_script_tags('app') }}
+{% endblock %}
+</body>
 </html>
 
 
