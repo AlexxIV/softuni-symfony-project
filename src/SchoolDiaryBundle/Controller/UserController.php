@@ -72,7 +72,7 @@ class UserController extends Controller
 
             $fileName = md5(uniqid('', true)); //. '.' . $file->guessExtension();
 
-            $fileFolder = $form->getData()->getFirstName() . $form->getData()->getLastName();
+            $fileFolder = $form->getEmail();
 
             $cloudinary = $this->get('misteio_cloudinary_wrapper');
 
