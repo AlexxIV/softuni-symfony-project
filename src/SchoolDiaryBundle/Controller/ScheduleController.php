@@ -3,6 +3,8 @@
 namespace SchoolDiaryBundle\Controller;
 
 
+use http\Env\Response;
+use SchoolDiaryBundle\Entity\DayRecord;
 use SchoolDiaryBundle\Entity\Days;
 use SchoolDiaryBundle\Entity\Schedule;
 use SchoolDiaryBundle\Entity\SchoolClass;
@@ -75,6 +77,9 @@ class ScheduleController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $data = json_decode($request->getContent(), true);
+        //$data = '[{"name":"Monday","id":"26","subjects":[{"1":"T1"},{"2":"Test"},{"3":"Gosho"},{"4":""},{"5":""},{"6":""}]},{"name":"Tuesday","id":"27","subjects":[{"1":""},{"2":""},{"3":""},{"4":""},{"5":""},{"6":""}]},{"name":"Wednesday","id":"28","subjects":[{"1":""},{"2":""},{"3":""},{"4":""},{"5":""},{"6":""}]},{"name":"Thursday","id":"29","subjects":[{"1":""},{"2":""},{"3":""},{"4":""},{"5":""},{"6":""}]},{"name":"Friday","id":"30","subjects":[{"1":""},{"2":""},{"3":""},{"4":""},{"5":""},{"6":""}]}]';
+        //$data = json_decode($data, true);
+
 
         foreach ($data as $day) {
             $dbDay = $this
@@ -82,22 +87,28 @@ class ScheduleController extends Controller
                 ->getRepository(Days::class)
                 ->find($day{'id'});
 
-            $dbDay->setFirst($day{'subjects'}[0]);
-            $dbDay->setSecond($day{'subjects'}[1]);
-            $dbDay->setThird($day{'subjects'}[2]);
-            $dbDay->setFourth($day{'subjects'}[3]);
-            $dbDay->setFifth($day{'subjects'}[4]);
-            $dbDay->setSixth($day{'subjects'}[5]);
-            $dbDay->setSeventh($day{'subjects'}[6]);
+            /** @var DayRecord $singleRecord */
 
+            foreach ($dbDay->getRecords() as $singleRecord) {
+                foreach ($day{'subjects'} as $dayRecord){
+                    if (isset($dayRecord{$singleRecord->getIdentifier()})) {
+                        if ('' !== $dayRecord{$singleRecord->getIdentifier()}) {
+                            $singleRecord->setValue($dayRecord{$singleRecord->getIdentifier()});
+                            $em->persist($singleRecord);
+                        }
+                    }
+
+
+                }
+            }
             $em->persist($dbDay);
         }
         $em->flush();
 
-
         return new JsonResponse(array(
             'message' => 'Schedule updated successfully!',
         ), 200);
+
     }
 
 

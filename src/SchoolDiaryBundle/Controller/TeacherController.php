@@ -4,6 +4,7 @@ namespace SchoolDiaryBundle\Controller;
 
 use Doctrine\ORM\EntityRepository;
 use SchoolDiaryBundle\Entity\Absences;
+use SchoolDiaryBundle\Entity\DayRecord;
 use SchoolDiaryBundle\Entity\Days;
 use SchoolDiaryBundle\Entity\PersonalGrades;
 use SchoolDiaryBundle\Entity\Schedule;
@@ -59,6 +60,18 @@ class TeacherController extends Controller
                     $day = new Days();
                     $day->setDay($singleDay);
                     $day->setSchedule($schedule);
+
+                    for ($i = 1; $i <= 6; $i++) {
+                        $dayRecord = new DayRecord();
+                        $dayRecord->setIdentifier($i);
+                        $dayRecord->setValue('');
+                        $dayRecord->setDay($day);
+
+                        $day->addRecord($dayRecord);
+
+                        $em->persist($dayRecord);
+                    }
+
 
                     $em->persist($day);
 

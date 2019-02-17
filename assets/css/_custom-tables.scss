@@ -177,6 +177,11 @@
   background-color: #f3f3f3;
   background-clip: content-box;
   outline: none !important;
+
+  cursor: text;
+  .row-value {
+    outline: none !important;
+  }
 }
 
 .schedule-table {
@@ -205,6 +210,10 @@
     .single-subject {
       padding: 10px;
       text-align: left;
+
+      .row-value {
+        display: inline-block;
+      }
     }
     //
     //td {

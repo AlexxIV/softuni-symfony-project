@@ -1,13 +1,15 @@
 exports.default = (() => {
-    const schedule = $('#editable-schedule');
+    let schedule = $('#editable-schedule');
 
     $('#main-wrapper').on('click', '#schedule-edit', function (e) {
         e.preventDefault();
 
         let scheduleClone = schedule.clone();
-        let tableData = scheduleClone.find('.single-subject');
+        let tableData = scheduleClone.find('.single-subject .row-value');
+
         tableData.each(function (index, element) {
-           $(element).attr('contenteditable', 'true').addClass('editing');
+           $(element).parent().addClass('editing');
+           $(element).attr('contenteditable', 'true');
         });
 
         schedule.parent().html(scheduleClone);
@@ -42,8 +44,14 @@ exports.default = (() => {
             let subjects = $(element).find('.single-subject');
 
             subjects.each(function(){
-                var preparedElement = ($(this).text().split('.'));
-                subjectsArray.push(preparedElement[1].trim());
+
+                let recordIdentifier = $(this).find('.row-index').text();
+                recordIdentifier = recordIdentifier.split('.')[0];
+
+                let recordValue = $(this).find('.row-value').text();
+
+                let singleRecord = {[recordIdentifier]: recordValue};
+                subjectsArray.push(singleRecord);
             });
 
             let readyDay = {
@@ -71,12 +79,13 @@ exports.default = (() => {
 
                 let container = $('#editable-schedule').parent();
 
-                let tableData = $('#editable-schedule').find('.single-subject');
+                let tableData = $('#editable-schedule').find('.single-subject .row-value');
                 tableData.each(function (index, element) {
-                    $(element).attr('contenteditable', 'false').removeClass('editing');
+                    $(element).parent().removeClass('editing');
+                    $(element).attr('contenteditable', 'false');
                 });
                 $('#schedule-edit').show();
-
+                schedule = $('#editable-schedule');
                 $('#main').prepend("<div class='ajax-message text-center alert alert-success'>" + data.message + "</div>");
                 setTimeout(function () {
                     $('.ajax-message').fadeOut().remove();
@@ -87,6 +96,7 @@ exports.default = (() => {
                 setTimeout(function () {
                     $('.ajax-message').fadeOut().remove();
                 }, 5000);
+                console.log(errorMessage);
             }
         });
     });
