@@ -13,7 +13,7 @@
                 </tr>
                 {% for student in confirmedStudents %}
                     <tr>
-                        <td><img src="{{ student.image|cloudinary_url({"width" : 150, "height" : 150, "radius" : 50, "secure" : true}) }}{{ user.image|cloudinary_url({"width" : 150, "height" : 150, "radius" : 50, "secure" : true}) }}" alt=""></td>
+                        <td><img src="{{ student.image|cloudinary_url({"width" : 150, "height" : 150, "radius" : 50, "secure" : true}) }}" alt=""></td>
                         <td>{{ student.firstName }}</td>
                         <td>{{ student.lastName }}</td>
                         <td>{{ student.email }}</td>
