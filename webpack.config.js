@@ -2,6 +2,9 @@ var Encore = require('@symfony/webpack-encore');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 Encore
+    // Enable React
+    .enableReactPreset()
+    .addEntry('student', './assets/react/Student-details/Student-details.js')
     // directory where compiled assets will be stored
     .setOutputPath('web/build/')
     // public path used by the web server to access the output path

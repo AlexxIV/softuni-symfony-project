@@ -158,7 +158,7 @@ class Absences
     /**
      * @return User
      */
-    public function getStudent(): User
+    public function getStudent()
     {
         return $this->student;
     }

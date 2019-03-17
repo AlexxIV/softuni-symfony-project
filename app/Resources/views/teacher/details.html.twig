@@ -1,6 +1,37 @@
 {% extends 'base.html.twig' %}
 {% block main %}
-    <div class="row mt-5">
+    <div id="student-root" data-student="{{ student.serializer }}">{% spaceless %}
+        {% endspaceless %}</div>
+    {% block javascripts %}
+        {{ encore_entry_script_tags('student') }}
+    {% endblock %}
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{#
+<div class="row mt-5">
         <div class="col-12">
             <div class="custom-table-temlate">
                 <div class="header">Student</div>
@@ -103,64 +134,4 @@
             </div>
         </div>
     </div>
-    {#<div class="row grades d-none">#}
-    {#<div class="col-12">#}
-    {#<div class="row mt-2">#}
-    {#<div class="col-3 text-center">Course*</div>#}
-    {#<div class="col-3 text-center">Grade*</div>#}
-    {#<div class="col-3 text-center">Notes</div>#}
-    {#<div class="col-3 text-center">Actions</div>#}
-    {#</div>#}
-    {#{% for grade in grades %}#}
-    {#<div class="row m-3">#}
-    {#<div class="col-3 grade-name">#}
-    {#{{ grade.gradename }}#}
-    {#</div>#}
-    {#<div class="col-3 grade-value">#}
-    {#{{ grade.value }}#}
-    {#</div>#}
-    {#<div class="col-3 grade-notes">#}
-    {#{{ grade.notes }}#}
-    {#</div>#}
-    {#<div class="col-3 grade-actions">#}
-    {#<a href="{{ path('teacher_edit_grades', {'grade_id': grade.id}) }}"#}
-    {#class="btn-success btn grade-edit"#}
-    {#id="btn-edit-{{ grade.id }}"#}
-    {#>Edit#}
-    {#</a>#}
-    {#<a href="{{ path('teacher_delete_grades', {'grade_id': grade.id}) }}"#}
-    {#class="btn-danger btn grade-delete"#}
-    {#id="btn-delete-{{ grade.id }}"#}
-    {#>Delete#}
-    {#</a>#}
-    {#</div>#}
-    {#</div>#}
-    {#{% endfor %}#}
-    {#</div>#}
-    {#<div class="col-12 mt-5">#}
-    {#<a href="{{ path('teacher_add_grades', {'student_id': student.id}) }}" class="btn-primary btn float-right"#}
-    {#id="grade-add">Add</a>#}
-    {#</div>#}
-    {#</div>#}
-{% endblock %}
-
-{#<div class="row">#}
-    {#<div class="col-4">First Name:</div>#}
-    {#<div class="col-8">{{ student.firstName }}</div>#}
-{#</div>#}
-{#<div class="row">#}
-    {#<div class="col-4">Last Name:</div>#}
-    {#<div class="col-8">{{ student.lastName }}</div>#}
-{#</div>#}
-{#<div class="row">#}
-    {#<div class="col-4">Email:</div>#}
-    {#<div class="col-8">{{ student.email }}</div>#}
-{#</div>#}
-{#<div class="row">#}
-    {#<div class="col-4">Personal ID:</div>#}
-    {#<div class="col-8">{{ student.personalID }}</div>#}
-{#</div>#}
-{#<div class="row">#}
-    {#<div class="col-4">Grade:</div>#}
-    {#<div class="col-8">{{ student.grade }}</div>#}
-{#</div>#}
+#}

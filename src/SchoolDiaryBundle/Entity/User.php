@@ -9,6 +9,9 @@ use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\OneToOne;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -425,6 +428,22 @@ class User implements UserInterface, \Serializable
     public function eraseCredentials()
     {
         return null;
+    }
+
+    public function serializer() {
+        $encoder = new JsonEncoder();
+
+        $normalizer = new ObjectNormalizer();
+        $normalizer->setIgnoredAttributes(array(
+            'admin', 'password', 'username',
+            'salt', 'roles', 'teacher', 'teacherClass'));
+
+        $normalizer->setCircularReferenceHandler(function ($object) {
+            return $object->getId();
+        });
+
+        $serializer = new Serializer(array($normalizer), array($encoder));
+        return $serializer->serialize($this, 'json');
     }
 }
 

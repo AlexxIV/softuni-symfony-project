@@ -177,8 +177,8 @@ class TeacherController extends Controller
 
         return $this->render('teacher/details.html.twig', array(
             'student' => $student,
-            'grades' => $studentGrades,
-            'absences' => $studentAbsences
+//            'grades' => $studentGrades,
+//            'absences' => $studentAbsences
         ));
     }
 

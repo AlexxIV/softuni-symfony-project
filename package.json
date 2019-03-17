@@ -5,11 +5,19 @@
     "bootstrap": "^4.2.1",
     "copy-webpack-plugin": "^4.6.0",
     "jquery": "^3.3.1",
+    "moment": "^2.24.0",
     "node-sass": "^4.11.0",
     "popper.js": "^1.14.6",
     "sass-loader": "7.0.1"
   },
   "scripts": {
     "heroku-postbuild": "yarn encore production"
+  },
+  "devDependencies": {
+    "@babel/preset-react": "^7.0.0",
+    "babel-preset-react": "^6.24.1",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.4",
+    "react-dom": "^16.8.4"
   }
 }
